@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
@@ -16,6 +17,8 @@ public class Robot extends TimedRobot {
   //Controllers
   XboxController XboxDrive = new XboxController(0);
   XboxController XboxShooter = new XboxController(1);
+  //Controller vars
+  double DriveSpeed;
 
   //Drivebase motors
   WPI_VictorSPX DriveL1 = new WPI_VictorSPX(1);
@@ -53,12 +56,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-
-    DriveBase.arcadeDrive(XboxDrive.getRawAxis(1), XboxDrive.getRawAxis(2));
+    DriveSpeed = XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
+    DriveBase.arcadeDrive(DriveSpeed, XboxDrive.getRawAxis(2));
 
   }
 
-  
+
 
   @Override
   public void testPeriodic() {
