@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
     } else if(ShooterBumperRight  && ShooterBumperLeft){
       //Stop It
       Shooter.set(ShootyMidSpeed);
-      System.out.println("Seriously, Don't do it.");
+      System.out.println("Seriously, Stop it");
     } else {
       //No
       Shooter.set(Stop);
