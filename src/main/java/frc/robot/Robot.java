@@ -9,7 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
@@ -17,11 +17,19 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  //Drivebase
+  VictorSPX DriveL1= new VictorSPX(1);
+  VictorSPX DriveL2 = new VictorSPX(2);
+  VictorSPX DriveR1 = new VictorSPX(3);
+  VictorSPX DriveR2 = new VictorSPX(4);
+
+
+
+
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    DriveL2.follow(DriveL1);
+    DriveR2.follow(DriveR1);
   }
 
   @Override
