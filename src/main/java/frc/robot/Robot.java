@@ -17,6 +17,18 @@ public class Robot extends TimedRobot {
   double DriveSpeed;
   double DriveSpeedMulti = 1.0;
   double TurnSpeedMulti = 1.0;
+  //Intakey
+  double IntakeySpeed = 0.8;
+  double OutakeySpeed = -0.8;
+  double IntakeyLiftySpeed = 0.8;
+  double IntakeyDownySpeed = -0.4;
+  //Shooty
+  double ShootyShootSpeed = 1.0;
+  double ShootyMidSpeed = 0.2;
+  double ShootyBackSpeed = -0.6;
+  //Stop
+  double Stop = 0.0;
+
 
   //Drivebase motors
   WPI_VictorSPX DriveL1 = new WPI_VictorSPX(1);
@@ -77,33 +89,33 @@ public class Robot extends TimedRobot {
     //Intake
     if(ShooterAButton  && !ShooterYButton){
       //In
-      Roller.set(1.0);
+      Roller.set(IntakeySpeed);
     } else if(!ShooterAButton  && ShooterYButton){
       //Out
-      Roller.set(-1.0);
+      Roller.set(OutakeySpeed);
     } else if(ShooterAButton  && ShooterYButton){
       //What
-      Roller.set(0.0);
+      Roller.set(Stop);
       System.out.println("No, the Intake can't go in and out at the same time.");
     } else {
       //No
-      Roller.set(0.0);
+      Roller.set(Stop);
     }
 
     //Intake Lift
     if(ShooterBButton  && !ShooterXButton){
       //In
-      Roller.set(0.5);
+      Roller.set(IntakeyLiftySpeed);
     } else if(!ShooterBButton  && ShooterXButton){
       //Out
-      Roller.set(-0.5);
+      Roller.set(IntakeyDownySpeed);
     } else if(ShooterBButton  && ShooterXButton){
       //What
-      Roller.set(0.0);
+      Roller.set(Stop);
       System.out.println("Why?");
     } else {
       //No
-      Roller.set(0.0);
+      Roller.set(Stop);
     }
 
     //Shooter
@@ -116,11 +128,11 @@ public class Robot extends TimedRobot {
       System.out.println("Why would you do that?");
     } else if(ShooterBumperRight  && ShooterBumperLeft){
       //Stop It
-      Shooter.set(0.2);
+      Shooter.set(ShootyMidSpeed);
       System.out.println("Seriously, Don't do it.");
     } else {
       //No
-      Shooter.set(0.0);
+      Shooter.set(Stop);
     }
 
 
