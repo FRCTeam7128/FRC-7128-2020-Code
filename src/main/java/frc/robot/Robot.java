@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
+
 public class Robot extends TimedRobot {
   //Controllers
   XboxController XboxDrive = new XboxController(0);
@@ -42,6 +43,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     DriveL2.follow(DriveL1);
     DriveR2.follow(DriveR1);
+    Winch2.follow(Winch1);
   }
 
   @Override
@@ -61,8 +63,22 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    //Driving
     DriveSpeed = XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
     DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(2) * TurnSpeedMulti);
+    //Intake
+    boolean DriveBumperRight = XboxDrive.getBumper(Hand.kRight);
+    boolean DriveBumperLeft = XboxDrive.getBumper(Hand.kLeft);
+    
+    if(DriveBumperRight = true){
+      Roller.set(1.0);
+    } else if(DriveBumperLeft = true){
+      Roller.set(-1.0);
+    }else if(DriveBumperLeft = DriveBumperRight){
+      Roller.set(0.0);
+    }
+
+
 
   }
 
