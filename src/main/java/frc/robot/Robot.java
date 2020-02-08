@@ -26,17 +26,17 @@ public class Robot extends TimedRobot {
   DifferentialDrive DriveBase = new DifferentialDrive(DriveL1, DriveR1);
 
   //Intake motors
-  WPI_VictorSPX Roller = new WPI_VictorSPX(5);
-  WPI_VictorSPX IntakeLift = new WPI_VictorSPX(6);
+  WPI_TalonSRX Roller = new WPI_TalonSRX(1);
+  WPI_VictorSPX IntakeLift = new WPI_VictorSPX(5);
 
   //Shooter motors
-  WPI_VictorSPX Shooter = new WPI_VictorSPX(7);
-  WPI_TalonSRX Indexer = new WPI_TalonSRX(1);
+  WPI_TalonSRX Shooter = new WPI_TalonSRX(2);
+  WPI_TalonSRX Indexer = new WPI_TalonSRX(3);
 
   //Climb motors
-  WPI_VictorSPX Hook = new WPI_VictorSPX(8);
-  WPI_TalonSRX Winch1 = new WPI_TalonSRX(2);
-  WPI_TalonSRX Winch2 = new WPI_TalonSRX(3);
+  WPI_VictorSPX Hook = new WPI_VictorSPX(6);
+  WPI_VictorSPX Winch1 = new WPI_VictorSPX(7);
+  WPI_VictorSPX Winch2 = new WPI_VictorSPX(8);
 
 
   @Override
@@ -67,19 +67,21 @@ public class Robot extends TimedRobot {
     DriveSpeed = XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
     DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(2) * TurnSpeedMulti);
     
-    boolean DriveBumperRight = XboxDrive.getBumper(Hand.kRight);
-    boolean DriveBumperLeft = XboxDrive.getBumper(Hand.kLeft);
+    boolean ShooterAButton = XboxShooter.getAButton();
+    boolean ShooterYButton = XboxShooter.getYButton();
+    boolean ShooterBButton = XboxShooter.getBButton();
+    boolean ShooterXButton = XboxShooter.getXButton();
     boolean ShooterBumperRight = XboxShooter.getBumper(Hand.kRight);
     boolean ShooterBumperLeft = XboxShooter.getBumper(Hand.kLeft);
 
     //Intake
-    if(DriveBumperRight  && !DriveBumperLeft){
+    if(ShooterAButton  && !ShooterYButton){
       //In
       Roller.set(1.0);
-    } else if(!DriveBumperRight  && DriveBumperLeft){
+    } else if(!ShooterAButton  && ShooterYButton){
       //Out
       Roller.set(-1.0);
-    } else if(DriveBumperRight  && DriveBumperLeft){
+    } else if(ShooterAButton  && ShooterYButton){
       //What
       Roller.set(0.0);
       System.out.println("No, the Intake can't go in and out at the same time.");
@@ -88,21 +90,37 @@ public class Robot extends TimedRobot {
       Roller.set(0.0);
     }
 
-    //Shooter
-    if(ShooterBumperRight  && !ShooterBumperLeft){
-      //Shoot
-      Roller.set(1.0);
-    } else if(!ShooterBumperRight  && ShooterBumperLeft){
-      //Why
-      Roller.set(-1.0);
-      System.out.println("Why would you do that?");
-    } else if(ShooterBumperRight  && ShooterBumperLeft){
-      //Stop It
+    //Intake Lift
+    if(ShooterBButton  && !ShooterXButton){
+      //In
+      Roller.set(0.5);
+    } else if(!ShooterBButton  && ShooterXButton){
+      //Out
+      Roller.set(-0.5);
+    } else if(ShooterBButton  && ShooterXButton){
+      //What
       Roller.set(0.0);
-      System.out.println("");
+      System.out.println("Why?");
     } else {
       //No
       Roller.set(0.0);
+    }
+
+    //Shooter
+    if(ShooterBumperRight  && !ShooterBumperLeft){
+      //Shoot
+      Shooter.set(1.0);
+    } else if(!ShooterBumperRight  && ShooterBumperLeft){
+      //Why
+      Shooter.set(-0.6);
+      System.out.println("Why would you do that?");
+    } else if(ShooterBumperRight  && ShooterBumperLeft){
+      //Stop It
+      Shooter.set(0.2);
+      System.out.println("Seriously, Don't do it.");
+    } else {
+      //No
+      Shooter.set(0.0);
     }
 
 
