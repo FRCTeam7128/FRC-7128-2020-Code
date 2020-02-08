@@ -66,18 +66,44 @@ public class Robot extends TimedRobot {
     //Driving
     DriveSpeed = XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
     DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(2) * TurnSpeedMulti);
-    //Intake
+    
     boolean DriveBumperRight = XboxDrive.getBumper(Hand.kRight);
     boolean DriveBumperLeft = XboxDrive.getBumper(Hand.kLeft);
-    
-    if(DriveBumperRight = true){
+    boolean ShooterBumperRight = XboxShooter.getBumper(Hand.kRight);
+    boolean ShooterBumperLeft = XboxShooter.getBumper(Hand.kLeft);
+
+    //Intake
+    if(DriveBumperRight  && !DriveBumperLeft){
+      //In
       Roller.set(1.0);
-    } else if(DriveBumperLeft = true){
+    } else if(!DriveBumperRight  && DriveBumperLeft){
+      //Out
       Roller.set(-1.0);
-    }else if(DriveBumperLeft = DriveBumperRight){
+    } else if(DriveBumperRight  && DriveBumperLeft){
+      //What
+      Roller.set(0.0);
+      System.out.println("No, the Intake can't go in and out at the same time.");
+    } else {
+      //No
       Roller.set(0.0);
     }
 
+    //Shooter
+    if(ShooterBumperRight  && !ShooterBumperLeft){
+      //Shoot
+      Roller.set(1.0);
+    } else if(!ShooterBumperRight  && ShooterBumperLeft){
+      //Why
+      Roller.set(-1.0);
+      System.out.println("Why would you do that?");
+    } else if(ShooterBumperRight  && ShooterBumperLeft){
+      //Stop It
+      Roller.set(0.0);
+      System.out.println("");
+    } else {
+      //No
+      Roller.set(0.0);
+    }
 
 
   }
