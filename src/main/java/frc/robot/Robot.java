@@ -20,12 +20,19 @@ public class Robot extends TimedRobot {
   //Intakey
   double IntakeySpeed = 0.8;
   double OutakeySpeed = -0.8;
+  boolean ShooterAButton;
+  boolean ShooterYButton;
   double IntakeyLiftySpeed = 0.8;
   double IntakeyDownySpeed = -0.4;
+  boolean ShooterBButton;
+  boolean ShooterXButton;
+  //Indexy
+  double IndexForwardSpeed = 0.4;
+  double IndexBackSpeed = -1.0;
+  boolean ShooterBumperLeft;
+  boolean ShooterBumperRight;
   //Shooty
-  double ShootyShootSpeed = 1.0;
-  double ShootyMidSpeed = 0.2;
-  double ShootyBackSpeed = -0.6;
+  double ShooterSpeed;
   //Stop
   double Stop = 0.0;
 
@@ -79,14 +86,21 @@ public class Robot extends TimedRobot {
     DriveSpeed = XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
     DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(2) * TurnSpeedMulti);
     
-    boolean ShooterAButton = XboxShooter.getAButton();
-    boolean ShooterYButton = XboxShooter.getYButton();
-    boolean ShooterBButton = XboxShooter.getBButton();
-    boolean ShooterXButton = XboxShooter.getXButton();
-    boolean ShooterBumperRight = XboxShooter.getBumper(Hand.kRight);
-    boolean ShooterBumperLeft = XboxShooter.getBumper(Hand.kLeft);
+    //Intakey
+    ShooterAButton = XboxShooter.getAButton();
+    ShooterYButton = XboxShooter.getYButton();
+    //Intakey Lifty
+    ShooterBButton = XboxShooter.getBButton();
+    ShooterXButton = XboxShooter.getXButton();
+    //Indexy
+    ShooterBumperRight = XboxShooter.getBumper(Hand.kRight);
+    ShooterBumperLeft = XboxShooter.getBumper(Hand.kLeft);
+    //Shooter
+    ShooterSpeed = XboxShooter.getTriggerAxis(Hand.kRight) - XboxShooter.getTriggerAxis(Hand.kLeft);
+    Shooter.set(ShooterSpeed);
 
-    //Intake
+
+    //Intakey
     if(ShooterAButton  && !ShooterYButton){
       //In
       Roller.set(IntakeySpeed);
@@ -102,38 +116,40 @@ public class Robot extends TimedRobot {
       Roller.set(Stop);
     }
 
-    //Intake Lift
+    //Intakey Lifty
     if(ShooterBButton  && !ShooterXButton){
       //In
-      Roller.set(IntakeyLiftySpeed);
+      IntakeLift.set(IntakeyLiftySpeed);
     } else if(!ShooterBButton  && ShooterXButton){
       //Out
-      Roller.set(IntakeyDownySpeed);
+      IntakeLift.set(IntakeyDownySpeed);
     } else if(ShooterBButton  && ShooterXButton){
       //What
-      Roller.set(Stop);
+      IntakeLift.set(Stop);
       System.out.println("Why?");
     } else {
       //No
-      Roller.set(Stop);
+      IntakeLift.set(Stop);
     }
 
-    //Shooter
+    //Indexy
     if(ShooterBumperRight  && !ShooterBumperLeft){
-      //Shoot
-      Shooter.set(1.0);
+      //Index forward 
+      Indexer.set(IndexForwardSpeed);
     } else if(!ShooterBumperRight  && ShooterBumperLeft){
       //Why
-      Shooter.set(-0.6);
+      Indexer.set(IndexBackSpeed);
       System.out.println("Why would you do that?");
     } else if(ShooterBumperRight  && ShooterBumperLeft){
       //Stop It
-      Shooter.set(ShootyMidSpeed);
+      Indexer.set(Stop);
       System.out.println("Seriously, Stop it");
     } else {
       //No
-      Shooter.set(Stop);
+      Indexer.set(Stop);
     }
+    
+
 
 
   }
