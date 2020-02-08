@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
   boolean ShooterBumperRight;
   //Shooty
   double ShooterSpeed;
+  //Climby
+  double ShooterLeftStick;
   //Stop
   double Stop = 0.0;
 
@@ -85,7 +87,6 @@ public class Robot extends TimedRobot {
     //Driving
     DriveSpeed = XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
     DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(2) * TurnSpeedMulti);
-    
     //Intakey
     ShooterAButton = XboxShooter.getAButton();
     ShooterYButton = XboxShooter.getYButton();
@@ -95,9 +96,20 @@ public class Robot extends TimedRobot {
     //Indexy
     ShooterBumperRight = XboxShooter.getBumper(Hand.kRight);
     ShooterBumperLeft = XboxShooter.getBumper(Hand.kLeft);
-    //Shooter
+
+
+
+    //Shooty
     ShooterSpeed = XboxShooter.getTriggerAxis(Hand.kRight) - XboxShooter.getTriggerAxis(Hand.kLeft);
     Shooter.set(ShooterSpeed);
+
+
+
+    //Climby
+    ShooterLeftStick = XboxShooter.getRawAxis(0);
+    Winch1.set(ShooterLeftStick / 2);
+    Hook.set(ShooterLeftStick);
+
 
 
     //Intakey
@@ -116,6 +128,8 @@ public class Robot extends TimedRobot {
       Roller.set(Stop);
     }
 
+
+
     //Intakey Lifty
     if(ShooterBButton  && !ShooterXButton){
       //In
@@ -131,6 +145,8 @@ public class Robot extends TimedRobot {
       //No
       IntakeLift.set(Stop);
     }
+
+
 
     //Indexy
     if(ShooterBumperRight  && !ShooterBumperLeft){
@@ -148,9 +164,6 @@ public class Robot extends TimedRobot {
       //No
       Indexer.set(Stop);
     }
-    
-
-
 
   }
 
