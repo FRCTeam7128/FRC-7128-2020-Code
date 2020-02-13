@@ -40,24 +40,24 @@ public class Robot extends TimedRobot {
 
 
   //Drivebase motors
-  WPI_VictorSPX DriveL1 = new WPI_VictorSPX(1);
-  WPI_VictorSPX DriveL2 = new WPI_VictorSPX(2);
-  WPI_VictorSPX DriveR1 = new WPI_VictorSPX(3);
-  WPI_VictorSPX DriveR2 = new WPI_VictorSPX(4);
+  WPI_VictorSPX DriveL1 = new WPI_VictorSPX(3);
+  WPI_VictorSPX DriveL2 = new WPI_VictorSPX(4);
+  WPI_VictorSPX DriveR1 = new WPI_VictorSPX(5);
+  WPI_VictorSPX DriveR2 = new WPI_VictorSPX(6);
   DifferentialDrive DriveBase = new DifferentialDrive(DriveL1, DriveR1);
 
   //Intake motors
-  WPI_TalonSRX Roller = new WPI_TalonSRX(1);
-  WPI_VictorSPX IntakeLift = new WPI_VictorSPX(5);
+  WPI_VictorSPX Roller = new WPI_VictorSPX(1);
+  WPI_VictorSPX IntakeLift = new WPI_VictorSPX(7);
 
   //Shooter motors
-  WPI_TalonSRX Shooter = new WPI_TalonSRX(2);
-  WPI_TalonSRX Indexer = new WPI_TalonSRX(3);
+  //WPI_TalonSRX Shooter = new WPI_TalonSRX(2);
+  //WPI_TalonSRX Indexer = new WPI_TalonSRX(3);
 
   //Climb motors
-  WPI_VictorSPX Hook = new WPI_VictorSPX(6);
-  WPI_VictorSPX Winch1 = new WPI_VictorSPX(7);
-  WPI_VictorSPX Winch2 = new WPI_VictorSPX(8);
+  //WPI_VictorSPX Hook = new WPI_VictorSPX(6);
+  WPI_VictorSPX Winch1 = new WPI_VictorSPX(1);
+  WPI_VictorSPX Winch2 = new WPI_VictorSPX(2);
 
 
   @Override
