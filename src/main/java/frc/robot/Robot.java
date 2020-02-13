@@ -101,14 +101,14 @@ public class Robot extends TimedRobot {
 
     //Shooty
     ShooterSpeed = XboxShooter.getTriggerAxis(Hand.kRight) - XboxShooter.getTriggerAxis(Hand.kLeft);
-    Shooter.set(ShooterSpeed);
+    //Shooter.set(ShooterSpeed);
 
 
 
     //Climby
     ShooterLeftStick = XboxShooter.getRawAxis(0);
     Winch1.set(ShooterLeftStick / 2);
-    Hook.set(ShooterLeftStick);
+    //Hook.set(ShooterLeftStick);
 
 
 
@@ -151,18 +151,18 @@ public class Robot extends TimedRobot {
     //Indexy
     if(ShooterBumperRight  && !ShooterBumperLeft){
       //Index forward 
-      Indexer.set(IndexForwardSpeed);
+      //Indexer.set(IndexForwardSpeed);
     } else if(!ShooterBumperRight  && ShooterBumperLeft){
       //Why
-      Indexer.set(IndexBackSpeed);
+      //Indexer.set(IndexBackSpeed);
       System.out.println("Why would you do that?");
     } else if(ShooterBumperRight  && ShooterBumperLeft){
       //Stop It
-      Indexer.set(Stop);
+      //Indexer.set(Stop);
       System.out.println("Seriously, Stop it");
     } else {
       //No
-      Indexer.set(Stop);
+      //Indexer.set(Stop);
     }
 
   }
