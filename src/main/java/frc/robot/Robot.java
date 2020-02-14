@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 
+
 public class Robot extends TimedRobot {
   //Controllers
   XboxController XboxDrive = new XboxController(0);
@@ -15,11 +16,11 @@ public class Robot extends TimedRobot {
 
   //Controller vars
   double DriveSpeed;
-  double DriveSpeedMulti = 1.0;
-  double TurnSpeedMulti = 1.0;
+  double DriveSpeedMulti = 0.8;
+  double TurnSpeedMulti = 0.5;
   //Intakey
-  double IntakeySpeed = 0.8;
-  double OutakeySpeed = -0.8;
+  double IntakeySpeed = 0.5;
+  double OutakeySpeed = -0.3;
   boolean ShooterAButton;
   boolean ShooterYButton;
   double IntakeyLiftySpeed = 0.8;
@@ -38,6 +39,14 @@ public class Robot extends TimedRobot {
   //Stop
   double Stop = 0.0;
 
+  //Shooter motors
+  WPI_TalonSRX Shooter = new WPI_TalonSRX(1);
+  WPI_TalonSRX Indexer = new WPI_TalonSRX(2);
+
+  //Climb motors
+  WPI_TalonSRX Hook = new WPI_TalonSRX(3);
+  WPI_VictorSPX Winch1 = new WPI_VictorSPX(1);
+  WPI_VictorSPX Winch2 = new WPI_VictorSPX(2);
 
   //Drivebase motors
   WPI_VictorSPX DriveL1 = new WPI_VictorSPX(3);
@@ -47,18 +56,8 @@ public class Robot extends TimedRobot {
   DifferentialDrive DriveBase = new DifferentialDrive(DriveL1, DriveR1);
 
   //Intake motors
-  WPI_VictorSPX Roller = new WPI_VictorSPX(1);
+  WPI_VictorSPX Roller = new WPI_VictorSPX(8);
   WPI_VictorSPX IntakeLift = new WPI_VictorSPX(7);
-
-  //Shooter motors
-  //WPI_TalonSRX Shooter = new WPI_TalonSRX(2);
-  //WPI_TalonSRX Indexer = new WPI_TalonSRX(3);
-
-  //Climb motors
-  //WPI_VictorSPX Hook = new WPI_VictorSPX(6);
-  WPI_VictorSPX Winch1 = new WPI_VictorSPX(1);
-  WPI_VictorSPX Winch2 = new WPI_VictorSPX(2);
-
 
   @Override
   public void robotInit() {
@@ -85,8 +84,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //Driving
-    DriveSpeed = XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
-    DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(2) * TurnSpeedMulti);
+    
+    DriveSpeed = XboxDrive.getRawAxis(1);
+    DriveBase.arcadeDrive(-1 * DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * TurnSpeedMulti);
+
     //Intakey
     ShooterAButton = XboxShooter.getAButton();
     ShooterYButton = XboxShooter.getYButton();
@@ -97,18 +98,14 @@ public class Robot extends TimedRobot {
     ShooterBumperRight = XboxShooter.getBumper(Hand.kRight);
     ShooterBumperLeft = XboxShooter.getBumper(Hand.kLeft);
 
-
-
     //Shooty
     ShooterSpeed = XboxShooter.getTriggerAxis(Hand.kRight) - XboxShooter.getTriggerAxis(Hand.kLeft);
-    //Shooter.set(ShooterSpeed);
-
-
+    Shooter.set(ShooterSpeed);
 
     //Climby
     ShooterLeftStick = XboxShooter.getRawAxis(0);
     Winch1.set(ShooterLeftStick / 2);
-    //Hook.set(ShooterLeftStick);
+    Hook.set(ShooterLeftStick);
 
 
 
@@ -151,18 +148,18 @@ public class Robot extends TimedRobot {
     //Indexy
     if(ShooterBumperRight  && !ShooterBumperLeft){
       //Index forward 
-      //Indexer.set(IndexForwardSpeed);
+      Indexer.set(IndexForwardSpeed);
     } else if(!ShooterBumperRight  && ShooterBumperLeft){
       //Why
-      //Indexer.set(IndexBackSpeed);
+      Indexer.set(IndexBackSpeed);
       System.out.println("Why would you do that?");
     } else if(ShooterBumperRight  && ShooterBumperLeft){
       //Stop It
-      //Indexer.set(Stop);
+      Indexer.set(Stop);
       System.out.println("Seriously, Stop it");
     } else {
       //No
-      //Indexer.set(Stop);
+      Indexer.set(Stop);
     }
 
   }
