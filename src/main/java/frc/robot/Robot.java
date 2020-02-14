@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
   double DriveSpeed;
   double DriveSpeedMulti = 0.8;
   double TurnSpeedMulti = 0.5;
+  boolean ReverseDrive;
   //Intakey
   double IntakeySpeed = 0.5;
   double OutakeySpeed = -0.3;
@@ -60,13 +61,13 @@ public class Robot extends TimedRobot {
   WPI_VictorSPX Roller = new WPI_VictorSPX(8);
   WPI_VictorSPX IntakeLift = new WPI_VictorSPX(7);
 
-  //Encoders
+  //Encodys
   Encoder WinchEnc = new Encoder(0,1);
   Encoder InLtEnc = new Encoder(2,3);
   Encoder LEnc = new Encoder(4,5);
   Encoder REnc = new Encoder(6,7);
   private static final double CPR = 360;   //Counts per rotation
-  private static final double WheelD = 6;  //wheel size 
+  private static final double WheelD = 6;  //Wheel size 
   private static final double PulleyD = 1.2; //Pulley Size
 
   @Override
@@ -94,6 +95,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
+
   }
 
   @Override
@@ -104,11 +106,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    //Driving
     
+    //Driving
     DriveSpeed = XboxDrive.getRawAxis(1);
-    DriveBase.arcadeDrive(-1 * DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * TurnSpeedMulti);
+    if(XboxDrive.getBumperPressed(Hand.kLeft)){
+      DriveSpeedMulti = -0.8;
+      TurnSpeedMulti = -0.6;
+    }else {
+      DriveSpeedMulti = 0.8;
+      TurnSpeedMulti = 0.6;
+    }
 
+    DriveBase.arcadeDrive(-1 * DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * TurnSpeedMulti);
     //Intakey
     ShooterAButton = XboxShooter.getAButton();
     ShooterYButton = XboxShooter.getYButton();
@@ -129,7 +138,6 @@ public class Robot extends TimedRobot {
     Hook.set(ShooterLeftStick);
 
 
-
     //Intakey
     if(ShooterAButton  && !ShooterYButton){
       //In
@@ -147,7 +155,6 @@ public class Robot extends TimedRobot {
     }
 
 
-
     //Intakey Lifty
     if(ShooterBButton  && !ShooterXButton){
       //In
@@ -163,7 +170,6 @@ public class Robot extends TimedRobot {
       //No
       IntakeLift.set(Stop);
     }
-
 
 
     //Indexy
@@ -184,7 +190,6 @@ public class Robot extends TimedRobot {
     }
 
   }
-
 
 
   @Override
