@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
   double TurnSpeedMulti = 0.8;
   boolean ReverseDrive;
   //Intakey
-  double IntakeySpeed = 1.0;
+  double IntakeySpeed = 0.3;
   double OutakeySpeed = -0.3;
   boolean ShooterAButton;
   boolean ShooterYButton;
