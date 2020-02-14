@@ -15,13 +15,14 @@ public class Robot extends TimedRobot {
   XboxController XboxDrive = new XboxController(0);
   XboxController XboxShooter = new XboxController(1);
 
+  
   //Controller vars
   double DriveSpeed;
   double DriveSpeedMulti = 0.8;
-  double TurnSpeedMulti = 0.5;
+  double TurnSpeedMulti = 0.8;
   boolean ReverseDrive;
   //Intakey
-  double IntakeySpeed = 0.5;
+  double IntakeySpeed = 1.0;
   double OutakeySpeed = -0.3;
   boolean ShooterAButton;
   boolean ShooterYButton;
@@ -106,18 +107,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
+
     //Driving
     DriveSpeed = XboxDrive.getRawAxis(1);
     if(XboxDrive.getBumperPressed(Hand.kLeft)){
-      DriveSpeedMulti = -0.8;
-      TurnSpeedMulti = -0.6;
-    }else {
-      DriveSpeedMulti = 0.8;
-      TurnSpeedMulti = 0.6;
+      DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * -TurnSpeedMulti);
     }
+    else {
+      DriveBase.arcadeDrive(-1 * DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * TurnSpeedMulti);
+    }
+    
 
-    DriveBase.arcadeDrive(-1 * DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * TurnSpeedMulti);
+    
     //Intakey
     ShooterAButton = XboxShooter.getAButton();
     ShooterYButton = XboxShooter.getYButton();
@@ -142,14 +143,17 @@ public class Robot extends TimedRobot {
     if(ShooterAButton  && !ShooterYButton){
       //In
       Roller.set(IntakeySpeed);
-    } else if(!ShooterAButton  && ShooterYButton){
+    } 
+    else if(!ShooterAButton  && ShooterYButton){
       //Out
       Roller.set(OutakeySpeed);
-    } else if(ShooterAButton  && ShooterYButton){
+    } 
+    else if(ShooterAButton  && ShooterYButton){
       //What
       Roller.set(Stop);
       System.out.println("No, the Intake can't go in and out at the same time.");
-    } else {
+    } 
+    else {
       //No
       Roller.set(Stop);
     }
@@ -159,14 +163,17 @@ public class Robot extends TimedRobot {
     if(ShooterBButton  && !ShooterXButton){
       //In
       IntakeLift.set(IntakeyLiftySpeed);
-    } else if(!ShooterBButton  && ShooterXButton){
+    } 
+    else if(!ShooterBButton  && ShooterXButton){
       //Out
       IntakeLift.set(IntakeyDownySpeed);
-    } else if(ShooterBButton  && ShooterXButton){
+    } 
+    else if(ShooterBButton  && ShooterXButton){
       //What
       IntakeLift.set(Stop);
       System.out.println("Why?");
-    } else {
+    } 
+    else {
       //No
       IntakeLift.set(Stop);
     }
@@ -176,15 +183,18 @@ public class Robot extends TimedRobot {
     if(ShooterBumperRight  && !ShooterBumperLeft){
       //Index forward 
       Indexer.set(IndexForwardSpeed);
-    } else if(!ShooterBumperRight  && ShooterBumperLeft){
+    } 
+    else if(!ShooterBumperRight  && ShooterBumperLeft){
       //Why
       Indexer.set(IndexBackSpeed);
       System.out.println("Why would you do that?");
-    } else if(ShooterBumperRight  && ShooterBumperLeft){
+    } 
+    else if(ShooterBumperRight  && ShooterBumperLeft){
       //Stop It
       Indexer.set(Stop);
       System.out.println("Seriously, Stop it");
-    } else {
+    } 
+    else {
       //No
       Indexer.set(Stop);
     }
