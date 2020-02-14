@@ -6,7 +6,8 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends TimedRobot {
@@ -59,15 +60,32 @@ public class Robot extends TimedRobot {
   WPI_VictorSPX Roller = new WPI_VictorSPX(8);
   WPI_VictorSPX IntakeLift = new WPI_VictorSPX(7);
 
+  //Encoders
+  Encoder WinchEnc = new Encoder(0,1);
+  Encoder LEnc = new Encoder(2,3);
+  Encoder REnc = new Encoder(4,5);
+  private static final double CPR = 360;   //Counts per rotation
+  private static final double WheelD = 6;  //wheel size 
+  private static final double PulleyD = 1.2; //Pulley Size
+
   @Override
   public void robotInit() {
     DriveL2.follow(DriveL1);
     DriveR2.follow(DriveR1);
     Winch2.follow(Winch1);
+    WinchEnc.setDistancePerPulse(Math.PI*PulleyD/CPR);
+    LEnc.setDistancePerPulse(Math.PI*WheelD/CPR);
+    REnc.setDistancePerPulse(Math.PI*WheelD/CPR);
   }
 
   @Override
   public void robotPeriodic() {
+    double WDis = WinchEnc.getDistance();
+    double LDis = LEnc.getDistance();
+    double RDis = REnc.getDistance();
+    SmartDashboard.putNumber("Winch Distance", WDis);
+    SmartDashboard.putNumber("Left Distance", LDis);
+    SmartDashboard.putNumber("Right Distance", RDis);
   }
 
   @Override
