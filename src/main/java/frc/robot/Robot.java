@@ -62,8 +62,9 @@ public class Robot extends TimedRobot {
 
   //Encoders
   Encoder WinchEnc = new Encoder(0,1);
-  Encoder LEnc = new Encoder(2,3);
-  Encoder REnc = new Encoder(4,5);
+  Encoder InLtEnc = new Encoder(2,3);
+  Encoder LEnc = new Encoder(4,5);
+  Encoder REnc = new Encoder(6,7);
   private static final double CPR = 360;   //Counts per rotation
   private static final double WheelD = 6;  //wheel size 
   private static final double PulleyD = 1.2; //Pulley Size
@@ -81,9 +82,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     double WDis = WinchEnc.getDistance();
+    double InLtRot = InLtEnc.getRaw();
     double LDis = LEnc.getDistance();
     double RDis = REnc.getDistance();
     SmartDashboard.putNumber("Winch Distance", WDis);
+    SmartDashboard.putNumber("Intake Rotations", InLtRot/188);
     SmartDashboard.putNumber("Left Distance", LDis);
     SmartDashboard.putNumber("Right Distance", RDis);
   }
