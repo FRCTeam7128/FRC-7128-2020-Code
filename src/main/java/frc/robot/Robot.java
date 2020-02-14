@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
   double TurnSpeedMulti = 0.8;
   boolean ReverseDrive;
   //Intakey
-  double IntakeySpeed = 0.3;
+  double IntakeySpeed = 0.5;
   double OutakeySpeed = -0.3;
   boolean ShooterAButton;
   boolean ShooterYButton;
@@ -59,8 +59,8 @@ public class Robot extends TimedRobot {
   DifferentialDrive DriveBase = new DifferentialDrive(DriveL1, DriveR1);
 
   //Intake motors
-  WPI_VictorSPX Roller = new WPI_VictorSPX(8);
-  WPI_VictorSPX IntakeLift = new WPI_VictorSPX(7);
+  WPI_VictorSPX Roller = new WPI_VictorSPX(7);
+  WPI_VictorSPX IntakeLift = new WPI_VictorSPX(8);
 
   //Encodys
   Encoder WinchEnc = new Encoder(0,1);
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    //Driving
+    //Drivy
     DriveSpeed = XboxDrive.getRawAxis(1);
     if(XboxDrive.getBumperPressed(Hand.kLeft)){
       DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * -TurnSpeedMulti);
