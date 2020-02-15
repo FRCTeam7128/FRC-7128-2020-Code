@@ -26,8 +26,8 @@ public class Robot extends TimedRobot {
   boolean ReverseDrive = false;
 
   //Intakey
-  double IntakeySpeed = 0.8;
-  double OutakeySpeed = -0.6;
+  double IntakeySpeed = 0.9;
+  double OutakeySpeed = -0.7;
   boolean ShooterAButton;
   boolean ShooterBButton;
   boolean ShooterXButton;
@@ -72,14 +72,16 @@ public class Robot extends TimedRobot {
   WPI_VictorSPX IntakeLift = new WPI_VictorSPX(8);
 
 
-  //Encodys
+  //Encody Bois
   Encoder WinchEnc = new Encoder(0,1);
-  Encoder InLtEnc = new Encoder(2,3);
+  Encoder IntakeEnc = new Encoder(2,3);
   Encoder LEnc = new Encoder(4,5);
   Encoder REnc = new Encoder(6,7);
+  Encoder HookEnc = new Encoder(8,9);
   private static final double CPR = 360;   //Counts per rotation
   private static final double WheelD = 6;  //Wheel size 
   private static final double PulleyD = 1.2; //Pulley Size
+  private static final double HookPulleyD = 0; //Hook Pulley Size
 
 
   @Override
@@ -87,22 +89,32 @@ public class Robot extends TimedRobot {
     DriveL2.follow(DriveL1);
     DriveR2.follow(DriveR1);
     Winch2.follow(Winch1);
+
+    WinchEnc.reset();
+    LEnc.reset();
+    REnc.reset();
+    IntakeEnc.reset();
+    HookEnc.reset();
+
     WinchEnc.setDistancePerPulse(Math.PI*PulleyD/CPR);
     LEnc.setDistancePerPulse(Math.PI*WheelD/CPR);
     REnc.setDistancePerPulse(Math.PI*WheelD/CPR);
+    HookEnc.setDistancePerPulse(Math.PI*HookPulleyD/CPR);
   }
 
 
   @Override
   public void robotPeriodic() {
     double WDis = WinchEnc.getDistance();
-    double InLtRot = InLtEnc.getRaw();
+    double IntakeRot = IntakeEnc.getRaw() / 188;
     double LDis = LEnc.getDistance();
     double RDis = REnc.getDistance();
+    double HookDis = HookEnc.getDistance();
     SmartDashboard.putNumber("Winch Distance", WDis);
-    SmartDashboard.putNumber("Intake Rotations", InLtRot/188);
+    SmartDashboard.putNumber("Intake Rotations", IntakeRot);
     SmartDashboard.putNumber("Left Distance", LDis);
     SmartDashboard.putNumber("Right Distance", RDis);
+    SmartDashboard.putNumber("Hook Distance", HookDis);
   }
 
   @Override
@@ -190,12 +202,16 @@ public class Robot extends TimedRobot {
 
     //Intakey Lifty
     if(ShooterYButton  && !ShooterAButton) {
-      //In
-      IntakeLift.set(IntakeyLiftySpeed);
+      //Up
+      while(IntakeEnc.getRaw() < 0) {
+        IntakeLift.set(IntakeyLiftySpeed);
+      }
     } 
     else if(!ShooterYButton  && ShooterAButton) {
-      //Out
-      IntakeLift.set(IntakeyDownySpeed);
+      //Down
+      while(IntakeEnc.getRaw() > 50) {
+        IntakeLift.set(IntakeyLiftySpeed);
+      }
     } 
     else if(ShooterYButton  && ShooterAButton) {
       //What
@@ -203,8 +219,8 @@ public class Robot extends TimedRobot {
       System.out.println("Why?");
     } 
     else {
-      //No
-      IntakeLift.set(Stop);
+      //Manual Up/Down
+      IntakeLift.set(XboxShooter.getRawAxis(5));
     }
 
 
