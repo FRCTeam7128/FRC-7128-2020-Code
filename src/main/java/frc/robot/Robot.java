@@ -11,56 +11,66 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends TimedRobot {
+
   //Controllers
   XboxController XboxDrive = new XboxController(0);
   XboxController XboxShooter = new XboxController(1);
 
   
-  //Controller vars
+  //Controller Variables
   double DriveSpeed;
-  double DriveSpeedMulti = 0.8;
-  double TurnSpeedMulti = 0.8;
-  boolean ReverseDrive;
+  double TurnSpeed;
+  double SlowDrive = 1;
+  double DriveSpeedMulti = 1;
+  double TurnSpeedMulti = 1;
+  boolean ReverseDrive = false;
+
   //Intakey
-  double IntakeySpeed = 0.5;
-  double OutakeySpeed = -0.3;
+  double IntakeySpeed = 0.8;
+  double OutakeySpeed = -0.6;
   boolean ShooterAButton;
+  boolean ShooterBButton;
+  boolean ShooterXButton;
   boolean ShooterYButton;
   double IntakeyLiftySpeed = 0.8;
   double IntakeyDownySpeed = -0.4;
-  boolean ShooterBButton;
-  boolean ShooterXButton;
+
   //Indexy
   double IndexForwardSpeed = 0.4;
   double IndexBackSpeed = -1.0;
   boolean ShooterBumperLeft;
   boolean ShooterBumperRight;
+
   //Shooty
   double ShooterSpeed;
+
   //Climby
   double ShooterLeftStick;
+
   //Stop
   double Stop = 0.0;
 
-  //Shooter motors
+
+  //Shooter Motors
   WPI_TalonSRX Shooter = new WPI_TalonSRX(1);
   WPI_TalonSRX Indexer = new WPI_TalonSRX(2);
 
-  //Climb motors
+  //Climb Motors
   WPI_TalonSRX Hook = new WPI_TalonSRX(3);
   WPI_VictorSPX Winch1 = new WPI_VictorSPX(1);
   WPI_VictorSPX Winch2 = new WPI_VictorSPX(2);
 
-  //Drivebase motors
+  //Drivebase Motors
   WPI_VictorSPX DriveL1 = new WPI_VictorSPX(3);
   WPI_VictorSPX DriveL2 = new WPI_VictorSPX(4);
   WPI_VictorSPX DriveR1 = new WPI_VictorSPX(5);
   WPI_VictorSPX DriveR2 = new WPI_VictorSPX(6);
   DifferentialDrive DriveBase = new DifferentialDrive(DriveL1, DriveR1);
 
-  //Intake motors
+  //Intake Motors
   WPI_VictorSPX Roller = new WPI_VictorSPX(7);
   WPI_VictorSPX IntakeLift = new WPI_VictorSPX(8);
+
 
   //Encodys
   Encoder WinchEnc = new Encoder(0,1);
@@ -71,6 +81,7 @@ public class Robot extends TimedRobot {
   private static final double WheelD = 6;  //Wheel size 
   private static final double PulleyD = 1.2; //Pulley Size
 
+
   @Override
   public void robotInit() {
     DriveL2.follow(DriveL1);
@@ -80,6 +91,7 @@ public class Robot extends TimedRobot {
     LEnc.setDistancePerPulse(Math.PI*WheelD/CPR);
     REnc.setDistancePerPulse(Math.PI*WheelD/CPR);
   }
+
 
   @Override
   public void robotPeriodic() {
@@ -96,35 +108,52 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-
   }
 
   @Override
   public void autonomousPeriodic() {
+
   }
-
-
 
   @Override
   public void teleopPeriodic() {
 
     //Drivy
-    DriveSpeed = XboxDrive.getRawAxis(1);
-    if(XboxDrive.getBumperPressed(Hand.kLeft)){
-      DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * -TurnSpeedMulti);
+    if(XboxDrive.getBumper(Hand.kRight)) {
+      SlowDrive = 2;
     }
     else {
-      DriveBase.arcadeDrive(-1 * DriveSpeed * DriveSpeedMulti, XboxDrive.getRawAxis(4) * TurnSpeedMulti);
+      SlowDrive = 1;
+    }
+
+    if(XboxDrive.getBumperPressed(Hand.kLeft)){
+      if(ReverseDrive){
+        ReverseDrive = false;
+      }
+      else {
+      ReverseDrive = true;
+      }
+    }
+
+    DriveSpeed = XboxDrive.getRawAxis(1) + XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
+    TurnSpeed = XboxDrive.getRawAxis(4) / SlowDrive;
+
+    if(ReverseDrive) {
+      DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti / SlowDrive, TurnSpeed * -TurnSpeedMulti);
+    }
+    else {
+      DriveBase.arcadeDrive(DriveSpeed * -DriveSpeedMulti / SlowDrive, TurnSpeed * TurnSpeedMulti);
     }
     
 
-    
-    //Intakey
+    //Intakey Lifty
     ShooterAButton = XboxShooter.getAButton();
     ShooterYButton = XboxShooter.getYButton();
-    //Intakey Lifty
+
+    //Intakey
     ShooterBButton = XboxShooter.getBButton();
     ShooterXButton = XboxShooter.getXButton();
+
     //Indexy
     ShooterBumperRight = XboxShooter.getBumper(Hand.kRight);
     ShooterBumperLeft = XboxShooter.getBumper(Hand.kLeft);
@@ -134,21 +163,21 @@ public class Robot extends TimedRobot {
     Shooter.set(ShooterSpeed);
 
     //Climby
-    ShooterLeftStick = XboxShooter.getRawAxis(0);
-    Winch1.set(ShooterLeftStick / 2);
+    ShooterLeftStick = XboxShooter.getRawAxis(1);
+    Winch1.set(ShooterLeftStick / -2);
     Hook.set(ShooterLeftStick);
 
 
     //Intakey
-    if(ShooterAButton  && !ShooterYButton){
+    if(ShooterBButton  && !ShooterXButton) {
       //In
       Roller.set(IntakeySpeed);
     } 
-    else if(!ShooterAButton  && ShooterYButton){
+    else if(!ShooterBButton  && ShooterXButton) {
       //Out
       Roller.set(OutakeySpeed);
     } 
-    else if(ShooterAButton  && ShooterYButton){
+    else if(ShooterBButton  && ShooterXButton) {
       //What
       Roller.set(Stop);
       System.out.println("No, the Intake can't go in and out at the same time.");
@@ -160,15 +189,15 @@ public class Robot extends TimedRobot {
 
 
     //Intakey Lifty
-    if(ShooterBButton  && !ShooterXButton){
+    if(ShooterYButton  && !ShooterAButton) {
       //In
       IntakeLift.set(IntakeyLiftySpeed);
     } 
-    else if(!ShooterBButton  && ShooterXButton){
+    else if(!ShooterYButton  && ShooterAButton) {
       //Out
       IntakeLift.set(IntakeyDownySpeed);
     } 
-    else if(ShooterBButton  && ShooterXButton){
+    else if(ShooterYButton  && ShooterAButton) {
       //What
       IntakeLift.set(Stop);
       System.out.println("Why?");
@@ -180,16 +209,16 @@ public class Robot extends TimedRobot {
 
 
     //Indexy
-    if(ShooterBumperRight  && !ShooterBumperLeft){
+    if(!ShooterBumperRight  && ShooterBumperLeft) {
       //Index forward 
       Indexer.set(IndexForwardSpeed);
     } 
-    else if(!ShooterBumperRight  && ShooterBumperLeft){
+    else if(ShooterBumperRight  && !ShooterBumperLeft) {
       //Why
       Indexer.set(IndexBackSpeed);
       System.out.println("Why would you do that?");
     } 
-    else if(ShooterBumperRight  && ShooterBumperLeft){
+    else if(ShooterBumperRight  && ShooterBumperLeft) {
       //Stop It
       Indexer.set(Stop);
       System.out.println("Seriously, Stop it");
@@ -204,5 +233,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
+
   }
 }
