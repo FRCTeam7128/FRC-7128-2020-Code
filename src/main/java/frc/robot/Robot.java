@@ -26,13 +26,13 @@ public class Robot extends TimedRobot {
   boolean ReverseDrive = false;
 
   //Intakey
-  double IntakeySpeed = 0.9;
-  double OutakeySpeed = -0.7;
+  double IntakeySpeed = 0.7;
+  double OutakeySpeed = -0.4;
   boolean ShooterAButton;
   boolean ShooterBButton;
   boolean ShooterXButton;
   boolean ShooterYButton;
-  double IntakeyLiftySpeed = 0.8;
+  double IntakeyUppySpeed = 0.8;
   double IntakeyDownySpeed = -0.4;
 
   //Indexy
@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     double WDis = WinchEnc.getDistance();
-    double IntakeRot = IntakeEnc.getRaw() / 188;
+    double IntakeRot = IntakeEnc.getRaw();
     double LDis = LEnc.getDistance();
     double RDis = REnc.getDistance();
     double HookDis = HookEnc.getDistance();
@@ -200,17 +200,27 @@ public class Robot extends TimedRobot {
     }
 
 
+
+
+
+
+
+
+
+
+
+
     //Intakey Lifty
     if(ShooterYButton  && !ShooterAButton) {
-      //Up
-      while(IntakeEnc.getRaw() < 0) {
-        IntakeLift.set(IntakeyLiftySpeed);
+      //Going Up
+      while(IntakeEnc.getRaw() < -10) {
+        IntakeLift.set(IntakeyUppySpeed);
       }
     } 
     else if(!ShooterYButton  && ShooterAButton) {
-      //Down
-      while(IntakeEnc.getRaw() > 50) {
-        IntakeLift.set(IntakeyLiftySpeed);
+      //Going Down
+      while(IntakeEnc.getRaw() > -560) {
+        IntakeLift.set(IntakeyDownySpeed);
       }
     } 
     else if(ShooterYButton  && ShooterAButton) {
@@ -222,6 +232,19 @@ public class Robot extends TimedRobot {
       //Manual Up/Down
       IntakeLift.set(XboxShooter.getRawAxis(5));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     //Indexy
@@ -240,7 +263,7 @@ public class Robot extends TimedRobot {
       System.out.println("Seriously, Stop it");
     } 
     else {
-      //No
+      //NooOOOooOOoOOoOoooOOoOOOOOOo
       Indexer.set(Stop);
     }
 
