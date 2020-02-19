@@ -9,13 +9,14 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import frc.robot.XboxDrive;
 
 public class Robot extends TimedRobot {
 
   //Controllers
-  XboxController XboxDrive = new XboxController(0);
+  XboxController XboxDriving = new XboxController(0);
   XboxController XboxShooter = new XboxController(1);
-
+  XboxDrive XboxD1 = new XboxDrive();
   
   //Controller Variables
   double DriveSpeed;
@@ -23,11 +24,11 @@ public class Robot extends TimedRobot {
   double SlowDrive = 1;
   double DriveSpeedMulti = 1;
   double TurnSpeedMulti = 1;
-  boolean ReverseDrive = false;
+  
 
   //Intakey
-  double IntakeySpeed = 0.7;
-  double OutakeySpeed = -0.4;
+  double IntakeySpeed = 0.6;
+  double OutakeySpeed = 0.5;
   boolean ShooterAButton;
   boolean ShooterBButton;
   boolean ShooterXButton;
@@ -130,32 +131,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    //Drivy
-    if(XboxDrive.getBumper(Hand.kRight)) {
-      SlowDrive = 2;
-    }
-    else {
-      SlowDrive = 1;
-    }
-
-    if(XboxDrive.getBumperPressed(Hand.kLeft)){
-      if(ReverseDrive){
-        ReverseDrive = false;
-      }
-      else {
-      ReverseDrive = true;
-      }
-    }
-
-    DriveSpeed = XboxDrive.getRawAxis(1) + XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
-    TurnSpeed = XboxDrive.getRawAxis(4) / SlowDrive;
-
-    if(ReverseDrive) {
-      DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti / SlowDrive, TurnSpeed * -TurnSpeedMulti);
-    }
-    else {
-      DriveBase.arcadeDrive(DriveSpeed * -DriveSpeedMulti / SlowDrive, TurnSpeed * TurnSpeedMulti);
-    }
+    XboxD1.use();
     
 
     //Intakey Lifty
