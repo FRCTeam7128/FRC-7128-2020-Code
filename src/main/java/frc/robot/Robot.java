@@ -16,7 +16,7 @@ public class Robot extends TimedRobot {
   XboxController XboxDrive = new XboxController(0);
   XboxController XboxShooter = new XboxController(1);
 
-  
+
   //Controller Variables
   double DriveSpeed;
   double TurnSpeed;
@@ -172,13 +172,26 @@ public class Robot extends TimedRobot {
 
     //Shooty
     ShooterSpeed = XboxShooter.getTriggerAxis(Hand.kRight) - XboxShooter.getTriggerAxis(Hand.kLeft);
-    Shooter.set(ShooterSpeed);
+    Shooter.set(ShooterSpeed/3);
 
     //Climby
     ShooterLeftStick = XboxShooter.getRawAxis(1);
-    Winch1.set(ShooterLeftStick / -2);
-    Hook.set(ShooterLeftStick);
-
+    /*
+    Winch1.set(XboxShooter.getRawAxis(1)/2);
+    Hook.set(XboxShooter.getRawAxis(5));
+    */
+    if(XboxDrive.getBButton() && !XboxDrive.getXButton() && !XboxDrive.getAButton()){
+      Winch1.set(-0.27);
+      Hook.set(1.0);
+    }else if(!XboxDrive.getBButton() && XboxDrive.getXButton() && !XboxDrive.getAButton()){
+      Winch1.set(0.5);
+    }else if(!XboxDrive.getBButton() && !XboxDrive.getXButton() && XboxDrive.getAButton()){
+      Hook.set(-1.0);
+    }else if(!XboxDrive.getBButton() && !XboxDrive.getXButton() && !XboxDrive.getAButton()){
+      Winch1.set(0.0);
+      Hook.set(0.0);
+    }
+    
 
     //Intakey
     if(ShooterBButton  && !ShooterXButton) {
@@ -230,7 +243,7 @@ public class Robot extends TimedRobot {
     } 
     else {
       //Manual Up/Down
-      IntakeLift.set(XboxShooter.getRawAxis(5));
+      //IntakeLift.set(XboxShooter.getRawAxis(5));
     }
 
 
