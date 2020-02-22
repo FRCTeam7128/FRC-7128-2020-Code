@@ -1,3 +1,7 @@
+/**
+ * FRC Team 7128 - 2020 FRC Code
+*/
+
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -114,6 +118,7 @@ public class Robot extends TimedRobot {
     double RDis = REnc.getDistance();
     double hookDis = hookEnc.getDistance();
     double port0Current = M_PDP.getCurrent(0);
+
     SmartDashboard.putNumber("Winch Distance", WDis);
     SmartDashboard.putNumber("Intake Rotations", intakeRot);
     SmartDashboard.putNumber("Left Distance", LDis);
@@ -153,10 +158,12 @@ public class Robot extends TimedRobot {
       reverseDrive = true;
       }
     }
+
     //Speeds
     driveSpeed = xboxDrive.getRawAxis(1) - xboxDrive.getTriggerAxis(Hand.kRight) + xboxDrive.getTriggerAxis(Hand.kLeft);
     turnSpeed = xboxDrive.getRawAxis(4) / slowDrive;
 
+    //Driving
     if(reverseDrive) {
       driveBase.arcadeDrive(driveSpeed * driveSpeedMulti / slowDrive, turnSpeed * turnSpeedMulti);
     }
@@ -165,28 +172,25 @@ public class Robot extends TimedRobot {
     }
     
 
-    //Intakey Lifty
+    //Intake Lift
     shooterAButton = xboxShooter.getAButton();
     shooterYButton = xboxShooter.getYButton();
 
-    //Intakey
+    //Intake
     shooterBButton = xboxShooter.getBButton();
     shooterXButton = xboxShooter.getXButton();
 
-    //Indexy
+    //Indexer
     shooterBumperRight = xboxShooter.getBumper(Hand.kRight);
     shooterBumperLeft = xboxShooter.getBumper(Hand.kLeft);
 
-    //Shooty
+    //Shooter
     shooterSpeed = xboxShooter.getTriggerAxis(Hand.kRight) - xboxShooter.getTriggerAxis(Hand.kLeft);
     shooter.set(shooterSpeed/3);
 
-    //Climby
+    //Climb
     shooterLeftStick = xboxShooter.getRawAxis(1);
-    /*
-   winch1.set(xboxShooter.getRawAxis(1)/2);
-    hook.set(xboxShooter.getRawAxis(5));
-    */
+
     if(xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
       //Both Up
      winch1.set(-0.27);
@@ -205,14 +209,7 @@ public class Robot extends TimedRobot {
       //
     }
 
-
-
-    if(xboxDrive.getXButton()){
-
-    }
-    
-
-    //Intakey
+    //Intake
     if(shooterBButton  && !shooterXButton) {
       //In
       roller.set(intakeSpeed);
@@ -231,7 +228,7 @@ public class Robot extends TimedRobot {
       roller.set(stop);
     }
 
-    //Intakey Lifty
+    //Intake Lift
     if(shooterYButton  && !shooterAButton) {
       //going up
       intakeLift.set(intakeUpSpeed);
@@ -251,7 +248,7 @@ public class Robot extends TimedRobot {
       intakeLift.set(stop);
     }
 
-    //Indexy
+    //Indexer
     if(!shooterBumperRight  && shooterBumperLeft) {
       //Index forward 
       indexer.set(indexForwardSpeed);
