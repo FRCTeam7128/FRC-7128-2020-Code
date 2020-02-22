@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 
 public class Robot extends TimedRobot {
@@ -32,8 +33,8 @@ public class Robot extends TimedRobot {
   boolean ShooterBButton;
   boolean ShooterXButton;
   boolean ShooterYButton;
-  double IntakeyUppySpeed = 0.8;
-  double IntakeyDownySpeed = -0.4;
+  double IntakeyUppySpeed = 0.5;
+  double IntakeyDownySpeed = -0.1;
 
   //Indexy
   double IndexForwardSpeed = 0.4;
@@ -83,6 +84,8 @@ public class Robot extends TimedRobot {
   private static final double PulleyD = 1.2; //Pulley Size
   private static final double HookPulleyD = 0; //Hook Pulley Size
 
+  //PDP
+  PowerDistributionPanel M_PDP = new PowerDistributionPanel();
 
   @Override
   public void robotInit() {
@@ -110,11 +113,14 @@ public class Robot extends TimedRobot {
     double LDis = LEnc.getDistance();
     double RDis = REnc.getDistance();
     double HookDis = HookEnc.getDistance();
+    double port0Current = M_PDP.getCurrent(0);
     SmartDashboard.putNumber("Winch Distance", WDis);
     SmartDashboard.putNumber("Intake Rotations", IntakeRot);
     SmartDashboard.putNumber("Left Distance", LDis);
     SmartDashboard.putNumber("Right Distance", RDis);
     SmartDashboard.putNumber("Hook Distance", HookDis);
+    SmartDashboard.putBoolean("Reverse Drive", ReverseDrive);
+    SmartDashboard.putNumber("Intake Lift Currents", port0Current);
   }
 
   @Override
@@ -147,11 +153,11 @@ public class Robot extends TimedRobot {
       }
     }
 
-    DriveSpeed = XboxDrive.getRawAxis(1) + XboxDrive.getTriggerAxis(Hand.kRight) - XboxDrive.getTriggerAxis(Hand.kLeft);
+    DriveSpeed = XboxDrive.getRawAxis(1) - XboxDrive.getTriggerAxis(Hand.kRight) + XboxDrive.getTriggerAxis(Hand.kLeft);
     TurnSpeed = XboxDrive.getRawAxis(4) / SlowDrive;
 
     if(ReverseDrive) {
-      DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti / SlowDrive, TurnSpeed * -TurnSpeedMulti);
+      DriveBase.arcadeDrive(DriveSpeed * DriveSpeedMulti / SlowDrive, TurnSpeed * TurnSpeedMulti);
     }
     else {
       DriveBase.arcadeDrive(DriveSpeed * -DriveSpeedMulti / SlowDrive, TurnSpeed * TurnSpeedMulti);
@@ -181,15 +187,27 @@ public class Robot extends TimedRobot {
     Hook.set(XboxShooter.getRawAxis(5));
     */
     if(XboxDrive.getBButton() && !XboxDrive.getXButton() && !XboxDrive.getAButton()){
+      //Both Up
       Winch1.set(-0.27);
       Hook.set(1.0);
     }else if(!XboxDrive.getBButton() && XboxDrive.getXButton() && !XboxDrive.getAButton()){
+      //Climb
       Winch1.set(0.5);
     }else if(!XboxDrive.getBButton() && !XboxDrive.getXButton() && XboxDrive.getAButton()){
+      //Hook down
       Hook.set(-1.0);
     }else if(!XboxDrive.getBButton() && !XboxDrive.getXButton() && !XboxDrive.getAButton()){
+      //Stop
       Winch1.set(0.0);
       Hook.set(0.0);
+    }else if(!XboxDrive.getBButton() && !XboxDrive.getXButton() && !XboxDrive.getAButton()){
+      //
+    }
+
+
+
+    if(XboxDrive.getXButton()){
+
     }
     
 
@@ -212,29 +230,14 @@ public class Robot extends TimedRobot {
       Roller.set(Stop);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     //Intakey Lifty
     if(ShooterYButton  && !ShooterAButton) {
-      //Going Up
-      while(IntakeEnc.getRaw() < -10) {
-        IntakeLift.set(IntakeyUppySpeed);
-      }
+      //going up
+      IntakeLift.set(IntakeyUppySpeed);
     } 
     else if(!ShooterYButton  && ShooterAButton) {
       //Going Down
-      while(IntakeEnc.getRaw() > -560) {
-        IntakeLift.set(IntakeyDownySpeed);
-      }
+      IntakeLift.set(IntakeyDownySpeed);
     } 
     else if(ShooterYButton  && ShooterAButton) {
       //What
@@ -244,21 +247,8 @@ public class Robot extends TimedRobot {
     else {
       //Manual Up/Down
       //IntakeLift.set(XboxShooter.getRawAxis(5));
+      IntakeLift.set(Stop);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     //Indexy
     if(!ShooterBumperRight  && ShooterBumperLeft) {
