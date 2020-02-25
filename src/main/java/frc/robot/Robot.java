@@ -17,9 +17,14 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends TimedRobot {
 
+  //(╯°□°）╯︵ ┻━┻) IT DOESN'T WORK!!!!! (╯°□°）╯︵ ┻━┻)
+
+
+
+
   //Controllers
-  XboxController xboxDrive = new XboxController(0);
-  XboxController xboxShooter = new XboxController(1);
+  XboxController 😀 = new XboxController(0);
+  XboxController 😁 = new XboxController(1);
 
 
   //Controller Variables
@@ -143,14 +148,14 @@ public class Robot extends TimedRobot {
 
     //Driving 
     //Slow drive
-    if(xboxDrive.getBumper(Hand.kRight)) {
+    if((😀).getBumper(Hand.kRight)) {
       slowDrive = 2;
     }
     else {
       slowDrive = 1;
     }
     //Reverse drive
-    if(xboxDrive.getBumperPressed(Hand.kLeft)){
+    if((😀).getBumperPressed(Hand.kLeft)){
       if(reverseDrive){
         reverseDrive = false;
       }
@@ -160,8 +165,8 @@ public class Robot extends TimedRobot {
     }
 
     //Speeds
-    driveSpeed = xboxDrive.getRawAxis(1) - xboxDrive.getTriggerAxis(Hand.kRight) + xboxDrive.getTriggerAxis(Hand.kLeft);
-    turnSpeed = xboxDrive.getRawAxis(4) / slowDrive;
+    driveSpeed = (😀).getRawAxis(1) - (😀).getTriggerAxis(Hand.kRight) + (😀).getTriggerAxis(Hand.kLeft);
+    turnSpeed = (😀).getRawAxis(4) / slowDrive;
 
     //Driving
     if(reverseDrive) {
@@ -173,39 +178,39 @@ public class Robot extends TimedRobot {
     
 
     //Intake Lift
-    shooterAButton = xboxShooter.getAButton();
-    shooterYButton = xboxShooter.getYButton();
+    shooterAButton = 😁.getAButton();
+    shooterYButton = 😁.getYButton();
 
     //Intake
-    shooterBButton = xboxShooter.getBButton();
-    shooterXButton = xboxShooter.getXButton();
+    shooterBButton = 😁.getBButton();
+    shooterXButton = 😁.getXButton();
 
     //Indexer
-    shooterBumperRight = xboxShooter.getBumper(Hand.kRight);
-    shooterBumperLeft = xboxShooter.getBumper(Hand.kLeft);
+    shooterBumperRight = 😁.getBumper(Hand.kRight);
+    shooterBumperLeft = 😁.getBumper(Hand.kLeft);
 
     //Shooter
-    shooterSpeed = xboxShooter.getTriggerAxis(Hand.kRight) - xboxShooter.getTriggerAxis(Hand.kLeft);
+    shooterSpeed = 😁.getTriggerAxis(Hand.kRight) - 😁.getTriggerAxis(Hand.kLeft);
     shooter.set(shooterSpeed/3);
 
     //Climb
-    shooterLeftStick = xboxShooter.getRawAxis(1);
+    shooterLeftStick = 😁.getRawAxis(1);
 
-    if(xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
+    if((😀).getBButton() && !(😀).getXButton() && !(😀).getAButton()){
       //Both Up
      winch1.set(-0.27);
       hook.set(1.0);
-    }else if(!xboxDrive.getBButton() && xboxDrive.getXButton() && !xboxDrive.getAButton()){
+    }else if(!(😀).getBButton() && (😀).getXButton() && !(😀).getAButton()){
       //Climb
      winch1.set(0.5);
-    }else if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && xboxDrive.getAButton()){
+    }else if(!(😀).getBButton() && !(😀).getXButton() && (😀).getAButton()){
       //hook down
       hook.set(-1.0);
-    }else if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
+    }else if(!(😀).getBButton() && !(😀).getXButton() && !(😀).getAButton()){
       //stop
      winch1.set(0.0);
       hook.set(0.0);
-    }else if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
+    }else if(!(😀).getBButton() && !(😀).getXButton() && !(😀).getAButton()){
       //
     }
 
@@ -244,7 +249,7 @@ public class Robot extends TimedRobot {
     } 
     else {
       //Manual Up/Down
-      //intakeLift.set(xboxShooter.getRawAxis(5));
+      //intakeLift.set(😁.getRawAxis(5));
       intakeLift.set(stop);
     }
 
