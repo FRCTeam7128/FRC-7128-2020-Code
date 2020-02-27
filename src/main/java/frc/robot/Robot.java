@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
 
   //Intake
   double intakeSpeed = 0.7;
-  double outakeSpeed = -0.4;
+  double outakeSpeed = 0.6;
   boolean shooterAButton;
   boolean shooterBButton;
   boolean shooterXButton;
@@ -190,7 +190,7 @@ public class Robot extends TimedRobot {
 
     //Shooter
     shooterSpeed = xboxShooter.getTriggerAxis(Hand.kRight) - xboxShooter.getTriggerAxis(Hand.kLeft);
-    shooter.set(shooterSpeed/3);
+    shooter.set(shooterSpeed);
 
 
 
@@ -259,7 +259,7 @@ public class Robot extends TimedRobot {
     }
 
 
-    
+
     //Indexer
     if(!shooterBumperRight  && shooterBumperLeft) {
       //Index forward 
