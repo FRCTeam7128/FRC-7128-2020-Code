@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
   double turnSpeedMulti = 1;
   boolean reverseDrive = false;
 
-  //Intakey
+  //Intake
   double intakeSpeed = 0.7;
   double outakeSpeed = -0.4;
   boolean shooterAButton;
@@ -40,23 +40,23 @@ public class Robot extends TimedRobot {
   double intakeUpSpeed = 0.5;
   double intakeDownSpeed = -0.1;
 
-  //Indexy
+  //Index
   double indexForwardSpeed = 0.4;
   double indexBackSpeed = -1.0;
   boolean shooterBumperLeft;
   boolean shooterBumperRight;
 
-  //Shooty
+  //Shoot
   double shooterSpeed;
 
-  //Climby
+  //Climb
   double shooterLeftStick;
 
   //stop
   double stop = 0.0;
 
 
-  //shooter Motors
+  //Shooter Motors
   WPI_TalonSRX shooter = new WPI_TalonSRX(1);
   WPI_TalonSRX indexer = new WPI_TalonSRX(2);
 
@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
   WPI_VictorSPX intakeLift = new WPI_VictorSPX(8);
 
 
-  //Encody Bois
+  //Encoders
   Encoder winchEnc = new Encoder(0,1);
   Encoder intakeEnc = new Encoder(2,3);
   Encoder LEnc = new Encoder(4,5);
