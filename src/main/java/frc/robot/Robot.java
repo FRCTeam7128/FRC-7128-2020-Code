@@ -31,8 +31,8 @@ public class Robot extends TimedRobot {
   boolean reverseDrive = false;
 
   //Intake
-  double intakeSpeed = 0.7;
-  double outakeSpeed = 0.6;
+  double intakeSpeed = 0.6;
+  double outakeSpeed = -0.4;
   boolean shooterAButton;
   boolean shooterBButton;
   boolean shooterXButton;
