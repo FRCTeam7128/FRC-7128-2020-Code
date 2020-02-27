@@ -149,6 +149,7 @@ public class Robot extends TimedRobot {
     else {
       slowDrive = 1;
     }
+
     //Reverse drive
     if(xboxDrive.getBumperPressed(Hand.kLeft)){
       if(reverseDrive){
@@ -172,6 +173,7 @@ public class Robot extends TimedRobot {
     }
     
 
+
     //Intake Lift
     shooterAButton = xboxShooter.getAButton();
     shooterYButton = xboxShooter.getYButton();
@@ -180,6 +182,8 @@ public class Robot extends TimedRobot {
     shooterBButton = xboxShooter.getBButton();
     shooterXButton = xboxShooter.getXButton();
 
+
+
     //Indexer
     shooterBumperRight = xboxShooter.getBumper(Hand.kRight);
     shooterBumperLeft = xboxShooter.getBumper(Hand.kLeft);
@@ -187,6 +191,8 @@ public class Robot extends TimedRobot {
     //Shooter
     shooterSpeed = xboxShooter.getTriggerAxis(Hand.kRight) - xboxShooter.getTriggerAxis(Hand.kLeft);
     shooter.set(shooterSpeed/3);
+
+
 
     //Climb
     shooterLeftStick = xboxShooter.getRawAxis(1);
@@ -209,6 +215,8 @@ public class Robot extends TimedRobot {
       //
     }
 
+
+
     //Intake
     if(shooterBButton  && !shooterXButton) {
       //In
@@ -227,6 +235,8 @@ public class Robot extends TimedRobot {
       //No
       roller.set(stop);
     }
+
+
 
     //Intake Lift
     if(shooterYButton  && !shooterAButton) {
@@ -248,6 +258,8 @@ public class Robot extends TimedRobot {
       intakeLift.set(stop);
     }
 
+
+    
     //Indexer
     if(!shooterBumperRight  && shooterBumperLeft) {
       //Index forward 
