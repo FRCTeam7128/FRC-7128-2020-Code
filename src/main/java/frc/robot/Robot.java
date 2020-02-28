@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
   double turnSpeed;
   double slowDrive = 1;
   double driveSpeedMulti = 1;
-  double turnSpeedMulti = 1;
+  double turnSpeedMulti = 0.5;
   boolean reverseDrive = false;
 
   //Intake
@@ -126,6 +126,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("hook Distance", hookDis);
     SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
     SmartDashboard.putNumber("Intake Lift Currents", port0Current);
+    SmartDashboard.putNumber("POV",xboxShooter.getPOV());
   }
 
   @Override
