@@ -26,8 +26,6 @@ public class Robot extends TimedRobot {
   //Controllers
   XboxController xboxDrive = new XboxController(0);
   XboxController xboxShooter = new XboxController(1);
-
-
   //Controller Variables
   double driveSpeed;
   double turnSpeed;
@@ -35,7 +33,6 @@ public class Robot extends TimedRobot {
   double driveSpeedMulti = 1;
   double turnSpeedMulti = 0.7;
   boolean reverseDrive = false;
-
   //Intake
   double intakeSpeed = 0.6;
   double outakeSpeed = -0.4;
@@ -46,71 +43,57 @@ public class Robot extends TimedRobot {
   boolean intakeLimit;
   double intakeUpSpeed = 0.4;
   double intakeDownSpeed = -0.1;
-
   //Index
   double indexForwardSpeed = 0.4;
   double indexBackSpeed = -1.0;
   boolean shooterBumperLeft;
   boolean shooterBumperRight;
-
   //Shoot
   double shooterSpeed;
-
   //Climb
   double shooterLeftStick;
-
   //Agitator
   double shooterX;
   double shooterY;
-
   //stop
-  //<p>
   double stop = 0.0;
-
 
   //Shooter Motors
   WPI_TalonSRX shooter = new WPI_TalonSRX(1);
   WPI_TalonSRX indexer = new WPI_TalonSRX(2);
-
   //Climb Motors
   WPI_TalonSRX hook = new WPI_TalonSRX(3);
   WPI_VictorSPX winch1 = new WPI_VictorSPX(1);
   WPI_VictorSPX winch2 = new WPI_VictorSPX(2);
-
   //Drivebase Motors
   WPI_VictorSPX driveL1 = new WPI_VictorSPX(3);
   WPI_VictorSPX driveL2 = new WPI_VictorSPX(4);
   WPI_VictorSPX driveR1 = new WPI_VictorSPX(5);
   WPI_VictorSPX driveR2 = new WPI_VictorSPX(6);
   DifferentialDrive driveBase = new DifferentialDrive(driveL1, driveR1);
-
   //Intake Motors
   WPI_VictorSPX roller = new WPI_VictorSPX(7);
   WPI_VictorSPX intakeLift = new WPI_VictorSPX(8);
-
   //Agitator Motor
   Spark agitatorMotor = new Spark(0);
-
   //Encoders
   Encoder winchEnc = new Encoder(0,1);
   Encoder LEnc = new Encoder(2,3);
   Encoder REnc = new Encoder(4,5);
   Encoder intakeEnc = new Encoder(7,8);
-
   private static final double CPR = 360;   //Counts per rotation
   private static final double wheelD = 6;  //Wheel size 
   private static final double pulleyD = 1.2; //Pulley Size
-
+  //Cameras
   UsbCamera Cam0;
   UsbCamera Cam1;
   MjpegServer switchCam;
-
   //PDP
   PowerDistributionPanel M_PDP = new PowerDistributionPanel();
-
   //Limit Switch
   DigitalInput limitSwitch = new DigitalInput(10);
 
+  //Initiation
   @Override
   public void robotInit() {
     driveL2.follow(driveL1);
@@ -133,7 +116,7 @@ public class Robot extends TimedRobot {
     Cam1.setConnectionStrategy(ConnectionStrategy.kAutoManage);
   }
 
-
+  //Periodic
   @Override
   public void robotPeriodic() {
     double WDis = winchEnc.getDistance();
@@ -151,11 +134,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("POV", xboxShooter.getPOV());
   }
 
+  //Auto Initiation
   @Override
   public void autonomousInit() {
 
   }
 
+  //Auto Periodic
   @Override
   public void autonomousPeriodic() {
     
@@ -165,6 +150,7 @@ public class Robot extends TimedRobot {
 
   }
 
+  //Teleop Periodic
   @Override
   public void teleopPeriodic() {
 
@@ -337,7 +323,7 @@ public class Robot extends TimedRobot {
 
   }
 
-
+  //Test Periodic
   @Override
   public void testPeriodic() {
 
