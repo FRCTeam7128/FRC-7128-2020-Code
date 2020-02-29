@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
   double turnSpeed;
   double slowDrive = 1;
   double driveSpeedMulti = 1;
-  double turnSpeedMulti = 0.5;
+  double turnSpeedMulti = 0.7;
   boolean reverseDrive = false;
 
   //Intake
