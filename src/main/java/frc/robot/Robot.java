@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource.ConnectionStrategy;
-
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends TimedRobot {
 
@@ -44,8 +44,8 @@ public class Robot extends TimedRobot {
   double intakeUpSpeed = 0.4;
   double intakeDownSpeed = -0.1;
   //Index
-  double indexForwardSpeed = 0.4;
-  double indexBackSpeed = -1.0;
+  double indexForwardSpeed = -1.0;
+  double indexBackSpeed = 0.4;
   boolean shooterBumperLeft;
   boolean shooterBumperRight;
   //Shoot
@@ -84,6 +84,7 @@ public class Robot extends TimedRobot {
   private static final double CPR = 360;   //Counts per rotation
   private static final double wheelD = 6;  //Wheel size 
   private static final double pulleyD = 1.2; //Pulley Size
+  double distanceTrav;
   //Cameras
   UsbCamera Cam0;
   UsbCamera Cam1;
@@ -92,7 +93,9 @@ public class Robot extends TimedRobot {
   PowerDistributionPanel M_PDP = new PowerDistributionPanel();
   //Limit Switch
   DigitalInput limitSwitch = new DigitalInput(10);
-
+  //Timer
+  Timer myTimer = new Timer();
+  double autoTime;
   //Initiation
   @Override
   public void robotInit() {
@@ -114,6 +117,8 @@ public class Robot extends TimedRobot {
     switchCam = CameraServer.getInstance().addSwitchedCamera("Camera");
     Cam0.setConnectionStrategy(ConnectionStrategy.kAutoManage);
     Cam1.setConnectionStrategy(ConnectionStrategy.kAutoManage);
+
+    myTimer.start();
   }
 
   //Periodic
@@ -124,7 +129,7 @@ public class Robot extends TimedRobot {
     double LDis = LEnc.getDistance();
     double RDis = REnc.getDistance();
     double port0Current = M_PDP.getCurrent(0);
-
+    distanceTrav = (LDis + RDis) / 2;
     SmartDashboard.putNumber("Winch Distance", WDis);
     SmartDashboard.putNumber("Intake Rotations", intakeRot);
     SmartDashboard.putNumber("Left Distance", LDis);
@@ -132,6 +137,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
     SmartDashboard.putNumber("Intake Lift Currents", port0Current);
     SmartDashboard.putNumber("POV", xboxShooter.getPOV());
+
+    autoTime = myTimer.get();
   }
 
   //Auto Initiation
@@ -144,10 +151,20 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     
-    while(REnc.getDistance() < 20){
+    if(autoTime > 0 && autoTime < 2.0 && distanceTrav < 60){
+      driveBase.arcadeDrive(1.0, 0);
+    }
+    else if(autoTime > 2.0 && autoTime < 6.0 && distanceTrav < 120){
       driveBase.arcadeDrive(0.3, 0);
     }
-
+    else if(autoTime > 6.0 && autoTime < 9.0){
+      driveBase.arcadeDrive(0, 0);
+      shooter.set(1.0);
+    }
+    else if(autoTime > 9.0 && autoTime < 15.0){
+      shooter.set(1.0);
+      indexer.set(indexForwardSpeed);
+    }
   }
 
   //Teleop Periodic
@@ -295,13 +312,13 @@ public class Robot extends TimedRobot {
     //Indexer
     if(!shooterBumperRight  && shooterBumperLeft) {
       //Index forward 
-      indexer.set(indexForwardSpeed);
-      agitatorMotor.set(-1);
+      indexer.set(indexBackSpeed);
+      System.out.println("Why would you do that?");
     } 
     else if(shooterBumperRight  && !shooterBumperLeft) {
       //Why
-      indexer.set(indexBackSpeed);
-      System.out.println("Why would you do that?");
+      indexer.set(indexForwardSpeed);
+      agitatorMotor.set(-1);
     } 
     else if(shooterBumperRight  && shooterBumperLeft) {
       //stop It
