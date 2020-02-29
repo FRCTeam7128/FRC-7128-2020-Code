@@ -235,21 +235,20 @@ public class Robot extends TimedRobot {
       //Both Up
      winch1.set(-0.27);
       hook.set(1.0);
-    }else if(!xboxDrive.getBButton() && xboxDrive.getXButton() && !xboxDrive.getAButton()){
-      //Climb
-     winch1.set(0.5);
-    }else if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && xboxDrive.getAButton()){
-      //hook down
-      hook.set(-1.0);
-    }else if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
-      //stop
-     winch1.set(0.0);
-      hook.set(0.0);
-    }else if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
-      //
     }
-
-
+    if(xboxDrive.getBButton()){
+      winch1.set(0.5);
+    }
+    if(xboxDrive.getYButton()){
+      winch1.set(-0.5);
+    }
+    if(xboxDrive.getXButton()){
+      hook.set(-1.0);
+    }
+    if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
+      winch1.set(0.0);
+      hook.set(0.0);
+    }
 
     //Intake
     if(shooterBButton  && !shooterXButton) {
