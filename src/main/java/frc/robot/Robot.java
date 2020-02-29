@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -38,8 +40,9 @@ public class Robot extends TimedRobot {
   boolean shooterBButton;
   boolean shooterXButton;
   boolean shooterYButton;
-  double intakeUpSpeed = 0.5;
-  double intakeDownSpeed = -0.1;
+  boolean intakeLimit;
+  double intakeUpSpeed = -0.1;
+  double intakeDownSpeed = 0.5;
 
   //Index
   double indexForwardSpeed = 0.4;
@@ -84,7 +87,6 @@ public class Robot extends TimedRobot {
   //Agitator Motor
   Spark agitatorMotor = new Spark(0);
 
-
   //Encoders
   Encoder winchEnc = new Encoder(0,1);
   Encoder LEnc = new Encoder(2,3);
@@ -94,10 +96,12 @@ public class Robot extends TimedRobot {
   private static final double CPR = 360;   //Counts per rotation
   private static final double wheelD = 6;  //Wheel size 
   private static final double pulleyD = 1.2; //Pulley Size
-  private static final double hookPulleyD = 0; //hook Pulley Size
 
   //PDP
   PowerDistributionPanel M_PDP = new PowerDistributionPanel();
+
+  //Limit Switch
+  DigitalInput limitSwitch = new DigitalInput(10);
 
   @Override
   public void robotInit() {
@@ -109,12 +113,13 @@ public class Robot extends TimedRobot {
     LEnc.reset();
     REnc.reset();
     intakeEnc.reset();
-    hookEnc.reset();
 
     winchEnc.setDistancePerPulse(Math.PI*pulleyD/CPR);
     LEnc.setDistancePerPulse(Math.PI*wheelD/CPR);
     REnc.setDistancePerPulse(Math.PI*wheelD/CPR);
-    hookEnc.setDistancePerPulse(Math.PI*hookPulleyD/CPR);
+    
+    CameraServer.getInstance().startAutomaticCapture(); 
+    
   }
 
 
@@ -124,14 +129,12 @@ public class Robot extends TimedRobot {
     double intakeRot = intakeEnc.getRaw();
     double LDis = LEnc.getDistance();
     double RDis = REnc.getDistance();
-    double hookDis = hookEnc.getDistance();
     double port0Current = M_PDP.getCurrent(0);
 
     SmartDashboard.putNumber("Winch Distance", WDis);
     SmartDashboard.putNumber("Intake Rotations", intakeRot);
     SmartDashboard.putNumber("Left Distance", LDis);
     SmartDashboard.putNumber("Right Distance", RDis);
-    SmartDashboard.putNumber("hook Distance", hookDis);
     SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
     SmartDashboard.putNumber("Intake Lift Currents", port0Current);
     SmartDashboard.putNumber("POV",xboxShooter.getPOV());
@@ -247,9 +250,16 @@ public class Robot extends TimedRobot {
 
 
     //Intake Lift
+    intakeLimit = limitSwitch.get();
+
     if(shooterYButton  && !shooterAButton) {
-      //going up
-      intakeLift.set(intakeUpSpeed);
+      //Going up
+      if(intakeLimit) {
+        intakeLift.set(intakeUpSpeed);
+      }
+      else {
+        intakeLift.set(stop);
+      }
     } 
     else if(!shooterYButton  && shooterAButton) {
       //Going Down
