@@ -16,9 +16,6 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.cscore.MjpegServer;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSource.ConnectionStrategy;
 
 
 public class Robot extends TimedRobot {
@@ -44,8 +41,8 @@ public class Robot extends TimedRobot {
   boolean shooterXButton;
   boolean shooterYButton;
   boolean intakeLimit;
-  double intakeUpSpeed = 0.4;
-  double intakeDownSpeed = -0.1;
+  double intakeUpSpeed = -0.1;
+  double intakeDownSpeed = 0.5;
 
   //Index
   double indexForwardSpeed = 0.4;
@@ -101,10 +98,6 @@ public class Robot extends TimedRobot {
   private static final double wheelD = 6;  //Wheel size 
   private static final double pulleyD = 1.2; //Pulley Size
 
-  UsbCamera Cam0;
-  UsbCamera Cam1;
-  MjpegServer switchCam;
-
   //PDP
   PowerDistributionPanel M_PDP = new PowerDistributionPanel();
 
@@ -126,11 +119,8 @@ public class Robot extends TimedRobot {
     LEnc.setDistancePerPulse(Math.PI*wheelD/CPR);
     REnc.setDistancePerPulse(Math.PI*wheelD/CPR);
     
-    Cam0 = CameraServer.getInstance().startAutomaticCapture(0);
-    Cam1 = CameraServer.getInstance().startAutomaticCapture(1);
-    switchCam = CameraServer.getInstance().addSwitchedCamera("Camera");
-    Cam0.setConnectionStrategy(ConnectionStrategy.kAutoManage);
-    Cam1.setConnectionStrategy(ConnectionStrategy.kAutoManage);
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
   }
 
 
@@ -149,7 +139,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Right Distance", RDis);
     SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
     SmartDashboard.putNumber("Intake Lift Currents", port0Current);
-    SmartDashboard.putNumber("POV", xboxShooter.getPOV());
+    SmartDashboard.putNumber("POV",xboxShooter.getPOV());
+    
   }
 
   @Override
@@ -159,23 +150,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    
-    while(REnc.getDistance() < 20){
-      driveBase.arcadeDrive(0.3, 0);
-    }
 
   }
 
   @Override
   public void teleopPeriodic() {
-
-    if(xboxDrive.getTriggerAxis(Hand.kLeft) > 0){
-      if(switchCam.getSource() == Cam0) {
-        switchCam.setSource(Cam1);
-    } else {
-        switchCam.setSource(Cam0);
-    }
-    }
 
     //Driving 
     //Slow drive
@@ -238,7 +217,7 @@ public class Robot extends TimedRobot {
       hook.set(1.0);
     }else if(!xboxDrive.getBButton() && xboxDrive.getXButton() && !xboxDrive.getAButton()){
       //Climb
-     winch1.set(0.5);
+     
     }else if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && xboxDrive.getAButton()){
       //hook down
       hook.set(-1.0);
@@ -249,7 +228,9 @@ public class Robot extends TimedRobot {
     }else if(!xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
       //
     }
-
+    if(xboxDrive.getBButton()){
+      winch1.set(0.5);
+    }
 
 
     //Intake
@@ -279,10 +260,10 @@ public class Robot extends TimedRobot {
     if(shooterYButton  && !shooterAButton) {
       //Going up
       if(intakeLimit) {
-        intakeLift.set(stop);
+        intakeLift.set(intakeUpSpeed);
       }
       else {
-        intakeLift.set(intakeUpSpeed);
+        intakeLift.set(stop);
       }
     } 
     else if(!shooterYButton  && shooterAButton) {
@@ -306,7 +287,6 @@ public class Robot extends TimedRobot {
     if(!shooterBumperRight  && shooterBumperLeft) {
       //Index forward 
       indexer.set(indexForwardSpeed);
-      agitatorMotor.set(-1);
     } 
     else if(shooterBumperRight  && !shooterBumperLeft) {
       //Why
