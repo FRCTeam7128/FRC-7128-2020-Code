@@ -280,7 +280,12 @@ public class Robot extends TimedRobot {
         intakeLift.set(stop);
       }
       else {
-        intakeLift.set(intakeUpSpeed);
+        if(intakeEnc.getRaw() < 500){
+          intakeLift.set(intakeUpSpeed);
+        }
+        else{
+          intakeLift.set(stop);
+        }
       }
     } 
     else if(!shooterYButton  && shooterAButton) {
