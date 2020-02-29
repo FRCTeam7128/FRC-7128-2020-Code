@@ -87,10 +87,10 @@ public class Robot extends TimedRobot {
 
   //Encoders
   Encoder winchEnc = new Encoder(0,1);
-  Encoder intakeEnc = new Encoder(2,3);
-  Encoder LEnc = new Encoder(4,5);
-  Encoder REnc = new Encoder(6,7);
-  Encoder hookEnc = new Encoder(8,9);
+  Encoder LEnc = new Encoder(2,3);
+  Encoder REnc = new Encoder(4,5);
+  Encoder intakeEnc = new Encoder(7,8);
+
   private static final double CPR = 360;   //Counts per rotation
   private static final double wheelD = 6;  //Wheel size 
   private static final double pulleyD = 1.2; //Pulley Size
