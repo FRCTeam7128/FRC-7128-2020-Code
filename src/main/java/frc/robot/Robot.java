@@ -272,6 +272,7 @@ public class Robot extends TimedRobot {
 
 
     //Intake Lift
+    
     intakeLimit = limitSwitch.get();
 
     if(shooterYButton  && !shooterAButton) {
