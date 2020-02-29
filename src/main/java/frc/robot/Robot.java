@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Spark;
 
 
 public class Robot extends TimedRobot {
@@ -52,6 +53,10 @@ public class Robot extends TimedRobot {
   //Climb
   double shooterLeftStick;
 
+  //Agitator
+  double shooterX;
+  double shooterY;
+
   //stop
   double stop = 0.0;
 
@@ -75,6 +80,9 @@ public class Robot extends TimedRobot {
   //Intake Motors
   WPI_VictorSPX roller = new WPI_VictorSPX(7);
   WPI_VictorSPX intakeLift = new WPI_VictorSPX(8);
+
+  //Agitator Motor
+  Spark agitatorMotor = new Spark(0);
 
 
   //Encoders
@@ -196,7 +204,6 @@ public class Robot extends TimedRobot {
 
 
     //Climb
-    shooterLeftStick = xboxShooter.getRawAxis(1);
 
     if(xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
       //Both Up
@@ -280,6 +287,22 @@ public class Robot extends TimedRobot {
       //NooOOOooOOoOOoOoooOOoOOOOOOo
       indexer.set(stop);
     }
+
+
+    //Agitator
+    shooterX = xboxShooter.getRawAxis(0);
+    shooterY = -xboxShooter.getRawAxis(1);
+
+    if(shooterX + shooterY > 0) {
+      agitatorMotor.set(1);
+    }
+    else if(shooterX + shooterY < 0) {
+      agitatorMotor.set(-1);
+    }
+    else {
+      agitatorMotor.stopMotor();
+    }
+
 
   }
 
