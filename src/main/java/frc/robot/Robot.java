@@ -168,7 +168,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if(xboxDrive.getTriggerAxis(Hand.kLeft) > 0){
+    if(xboxDrive.getTriggerAxis(Hand.kLeft) > 0.1){
       if(switchCam.getSource() == Cam0) {
         switchCam.setSource(Cam1);
     } else {
@@ -272,7 +272,7 @@ public class Robot extends TimedRobot {
 
 
     //Intake Lift
-    
+
     intakeLimit = limitSwitch.get();
 
     if(shooterYButton  && !shooterAButton) {
