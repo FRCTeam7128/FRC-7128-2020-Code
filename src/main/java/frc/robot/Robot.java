@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
   double shooterY;
 
   //stop
+  //<p>
   double stop = 0.0;
 
 
@@ -118,8 +119,8 @@ public class Robot extends TimedRobot {
     LEnc.setDistancePerPulse(Math.PI*wheelD/CPR);
     REnc.setDistancePerPulse(Math.PI*wheelD/CPR);
     
-    CameraServer.getInstance().startAutomaticCapture(); 
-    
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
   }
 
 
@@ -138,6 +139,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
     SmartDashboard.putNumber("Intake Lift Currents", port0Current);
     SmartDashboard.putNumber("POV",xboxShooter.getPOV());
+    
   }
 
   @Override
@@ -302,16 +304,8 @@ public class Robot extends TimedRobot {
     //Agitator
     shooterX = xboxShooter.getRawAxis(0);
     shooterY = -xboxShooter.getRawAxis(1);
+    agitatorMotor.set(shooterX);
 
-    if(shooterX + shooterY > 0) {
-      agitatorMotor.set(1);
-    }
-    else if(shooterX + shooterY < 0) {
-      agitatorMotor.set(-1);
-    }
-    else {
-      agitatorMotor.stopMotor();
-    }
 
 
   }
