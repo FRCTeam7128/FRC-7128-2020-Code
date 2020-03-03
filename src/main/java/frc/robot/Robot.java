@@ -107,66 +107,88 @@ public class Robot extends TimedRobot {
   double LDis;
   double RDis;
   double port0Current;
+
+
+
+
+
   //Initiation
   @Override
   public void robotInit() {
+    //Drivebase
     driveL2.follow(driveL1);
     driveR2.follow(driveR1);
     winch2.follow(winch1);
 
+    //Encoders
     winchEnc.reset();
     LEnc.reset();
     REnc.reset();
     intakeEnc.reset();
-
     winchEnc.setDistancePerPulse(Math.PI*pulleyD/CPR);
     LEnc.setDistancePerPulse(Math.PI*wheelD/CPR);
     REnc.setDistancePerPulse(Math.PI*wheelD/CPR);
     intakeEnc.setDistancePerPulse(2048);
-    
+
+    //Cameras
     Cam0 = CameraServer.getInstance().startAutomaticCapture(0);
     Cam1 = CameraServer.getInstance().startAutomaticCapture(1);
     switchCam = CameraServer.getInstance().addSwitchedCamera("Camera");
     Cam0.setConnectionStrategy(ConnectionStrategy.kAutoManage);
     Cam1.setConnectionStrategy(ConnectionStrategy.kAutoManage);
 
+    //Autonomous
     myTimer.start();
     autoStage = 0;
 
+    //Gyro
     NavX.reset();
   }
+
+
 
   
   //Periodic
   @Override
   public void robotPeriodic() {
+    //Encoders
     WDis = winchEnc.getDistance();
     intakeRot = intakeEnc.getDistance();
     LDis = LEnc.getDistance();
     RDis = REnc.getDistance();
     port0Current = M_PDP.getCurrent(0);
+    //Left encoder is dodgy so dont use this variable
     distanceTrav = (LDis + RDis) / 2;
+
+    //Timer
+    autoTime = myTimer.get();
+
+    //Smartdashboard
+    //encoders
     SmartDashboard.putNumber("Winch Distance", WDis);
     SmartDashboard.putNumber("Intake Rotations", intakeRot);
     SmartDashboard.putNumber("Left Distance", LDis);
     SmartDashboard.putNumber("Right Distance", RDis);
-    SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
-    SmartDashboard.putNumber("Intake Lift Currents", port0Current);
-    SmartDashboard.putNumber("POV", xboxShooter.getPOV());
     SmartDashboard.putNumber("distance travelled", distanceTrav);
     SmartDashboard.putNumber("left encoder raw", LEnc.getRaw());
     SmartDashboard.putNumber("right encoder raw", REnc.getRaw());
-
-    autoTime = myTimer.get();
+    //Auto
     SmartDashboard.putNumber("auto Time", autoTime);
     SmartDashboard.putNumber("auto Stage", autoStage);
-
     //NavX
     SmartDashboard.putNumber("NavX Pitch", NavX.getPitch());
     SmartDashboard.putNumber("NavX Roll", NavX.getRoll());
     SmartDashboard.putNumber("NavX Yaw", NavX.getYaw());
     SmartDashboard.putNumber("NavX North?", NavX.getCompassHeading());
+    //Others
+    SmartDashboard.putNumber("Intake Lift Currents", port0Current);
+    SmartDashboard.putNumber("POV", xboxShooter.getPOV());
+    SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
   }
+
+
+
+
 
   //Auto Initiation
   @Override
@@ -179,49 +201,63 @@ public class Robot extends TimedRobot {
     myTimer.reset();
   }
 
+
+
+
+
   //Auto Periodic
   @Override
   public void autonomousPeriodic() {
     autoStage = 10;
-    if(autoTime > 0 && autoTime < 2.0 && RDis > -30){
+    if(autoTime > 0 && autoTime < 4.0 && RDis > -50){ //Stage 1
+      //Drive Backwards at 50% speed until -50in
       driveBase.arcadeDrive(-0.5, 0);
       shooter.set(stop);
       indexer.set(stop);
       autoStage = 11;
+
     }
-    else if(autoTime > 2.0 && autoTime < 6.0 && RDis > -60){
+    else if(autoTime > 4.0 && autoTime < 6.0 && RDis > -60){ //Stage 2
+      //Drive Backwards at 30% speed until -60in
       driveBase.arcadeDrive(-0.35, 0);
       autoStage = 12;
+
     }
-    else if(autoTime > 6.0 && autoTime < 7.0){
+    else if(autoTime > 6.0 && autoTime < 7.0){ //Stage 3
+      //Charge Shooter
       driveBase.arcadeDrive(0.0, 0);
       shooter.set(1.0);
       autoStage = 13;
+
     }
     
-    else if(autoTime > 7.0 && autoTime < 9.0){
+    else if(autoTime > 7.0 && autoTime < 9.0){ //Stage 4
+      //Shoot power cells
       shooter.set(1.0);
       indexer.set(indexForwardSpeed);
       autoStage = 14;
+
     }
-    else{
+    else{                 //Stage 5
+      //Stop
       shooter.set(stop);
       indexer.set(stop);
       autoStage = 15;
+
     }
+
+
   }
+
+
+
+
 
   //Teleop Periodic
   @Override
   public void teleopPeriodic() {
 
-    if(xboxDrive.getTriggerAxis(Hand.kLeft) > 0.1){
-      if(switchCam.getSource() == Cam0) {
-        switchCam.setSource(Cam1);
-    } else {
-        switchCam.setSource(Cam0);
-    }
-    }
+    
 
     //Driving 
     //Slow drive
@@ -384,9 +420,16 @@ public class Robot extends TimedRobot {
 
   }
 
+
+
+
+
   //Test Periodic
   @Override
   public void testPeriodic() {
 
   }
+
+
 }
+// End of the main code
