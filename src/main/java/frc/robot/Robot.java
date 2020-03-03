@@ -21,6 +21,7 @@ import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.wpilibj.Timer;
+import com.kauailabs.navx.frc.AHRS;
 
 public class Robot extends TimedRobot {
 
@@ -97,8 +98,15 @@ public class Robot extends TimedRobot {
   //Timer
   Timer myTimer = new Timer();
   double autoTime;
-  //Auto Stage
   double autoStage;
+  //NavX
+  AHRS NavX = new AHRS();
+  //smartDashBoard values
+  double WDis;
+  double intakeRot;
+  double LDis;
+  double RDis;
+  double port0Current;
   //Initiation
   @Override
   public void robotInit() {
@@ -123,13 +131,11 @@ public class Robot extends TimedRobot {
 
     myTimer.start();
     autoStage = 0;
+
+    NavX.reset();
   }
 
-  double WDis;
-  double intakeRot;
-  double LDis;
-  double RDis;
-  double port0Current;
+  
   //Periodic
   @Override
   public void robotPeriodic() {
@@ -153,6 +159,12 @@ public class Robot extends TimedRobot {
     autoTime = myTimer.get();
     SmartDashboard.putNumber("auto Time", autoTime);
     SmartDashboard.putNumber("auto Stage", autoStage);
+
+    //NavX
+    SmartDashboard.putNumber("NavX Pitch", NavX.getPitch());
+    SmartDashboard.putNumber("NavX Roll", NavX.getRoll());
+    SmartDashboard.putNumber("NavX Yaw", NavX.getYaw());
+    SmartDashboard.putNumber("NavX North?", NavX.getCompassHeading());
   }
 
   //Auto Initiation
@@ -180,13 +192,13 @@ public class Robot extends TimedRobot {
       driveBase.arcadeDrive(-0.35, 0);
       autoStage = 12;
     }
-    else if(autoTime > 6.0 && autoTime < 9.0){
+    else if(autoTime > 6.0 && autoTime < 7.0){
       driveBase.arcadeDrive(0.0, 0);
       shooter.set(1.0);
       autoStage = 13;
     }
     
-    else if(autoTime > 9.0 && autoTime < 12.0){
+    else if(autoTime > 7.0 && autoTime < 9.0){
       shooter.set(1.0);
       indexer.set(indexForwardSpeed);
       autoStage = 14;
@@ -307,7 +319,7 @@ public class Robot extends TimedRobot {
 
     //Intake Lift
 
-    intakeLimit = limitSwitch.get();
+    intakeLimit = !limitSwitch.get();
 
     if(shooterYButton  && !shooterAButton) {
       //Going up
