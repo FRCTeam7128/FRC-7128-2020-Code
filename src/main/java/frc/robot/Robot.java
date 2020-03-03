@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
   Spark agitatorMotor = new Spark(0);
   //Encoders
   Encoder winchEnc = new Encoder(0,1);
-  Encoder LEnc = new Encoder(2,3);
+  Encoder LEnc = new Encoder(3,2); //Switched to create correct direction
   Encoder REnc = new Encoder(4,5);
   Encoder intakeEnc = new Encoder(7,8);
   private static final double CPR = 360;   //Counts per rotation
@@ -96,6 +96,8 @@ public class Robot extends TimedRobot {
   //Timer
   Timer myTimer = new Timer();
   double autoTime;
+  //Auto Stage
+  double autoStage;
   //Initiation
   @Override
   public void robotInit() {
@@ -119,6 +121,7 @@ public class Robot extends TimedRobot {
     Cam1.setConnectionStrategy(ConnectionStrategy.kAutoManage);
 
     myTimer.start();
+    autoStage = 0;
   }
 
   //Periodic
@@ -137,33 +140,52 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
     SmartDashboard.putNumber("Intake Lift Currents", port0Current);
     SmartDashboard.putNumber("POV", xboxShooter.getPOV());
+    SmartDashboard.putNumber("distance travelled", distanceTrav);
+    SmartDashboard.putNumber("left encoder raw", LEnc.getRaw());
+    SmartDashboard.putNumber("right encoder raw", REnc.getRaw());
 
     autoTime = myTimer.get();
+    SmartDashboard.putNumber("auto Time", autoTime);
+    SmartDashboard.putNumber("auto Stage", autoStage);
   }
 
   //Auto Initiation
   @Override
   public void autonomousInit() {
-
+    winchEnc.reset();
+    LEnc.reset();
+    REnc.reset();
+    intakeEnc.reset();
+    autoStage = 0;
+    myTimer.reset();
   }
 
   //Auto Periodic
   @Override
   public void autonomousPeriodic() {
-    
-    if(autoTime > 0 && autoTime < 2.0 && distanceTrav < 60){
-      driveBase.arcadeDrive(1.0, 0);
+    autoStage = 10;
+    if(autoTime > 0 && autoTime < 2.0 && distanceTrav < 40){
+      driveBase.arcadeDrive(0.5, 0);
+      autoStage = 11;
     }
-    else if(autoTime > 2.0 && autoTime < 6.0 && distanceTrav < 120){
+    else if(autoTime > 2.0 && autoTime < 3.0 && distanceTrav < 80){
       driveBase.arcadeDrive(0.3, 0);
+      autoStage = 12;
     }
-    else if(autoTime > 6.0 && autoTime < 9.0){
+    else if(autoTime > 3.0 && autoTime < 6.0){
       driveBase.arcadeDrive(0, 0);
       shooter.set(1.0);
+      autoStage = 13;
     }
-    else if(autoTime > 9.0 && autoTime < 15.0){
+    else if(autoTime > 6.0 && autoTime < 9.0){
       shooter.set(1.0);
       indexer.set(indexForwardSpeed);
+      autoStage = 14;
+    }
+    else{
+      shooter.set(stop);
+      indexer.set(stop);
+      autoStage = 15;
     }
   }
 
