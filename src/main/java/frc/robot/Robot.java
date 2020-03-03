@@ -108,10 +108,6 @@ public class Robot extends TimedRobot {
   double RDis;
   double port0Current;
 
-
-
-
-
   //Initiation
   @Override
   public void robotInit() {
@@ -145,9 +141,6 @@ public class Robot extends TimedRobot {
     NavX.reset();
   }
 
-
-
-  
   //Periodic
   @Override
   public void robotPeriodic() {
@@ -186,10 +179,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Reverse Drive", reverseDrive);
   }
 
-
-
-
-
   //Auto Initiation
   @Override
   public void autonomousInit() {
@@ -200,10 +189,6 @@ public class Robot extends TimedRobot {
     autoStage = 0;
     myTimer.reset();
   }
-
-
-
-
 
   //Auto Periodic
   @Override
@@ -249,26 +234,54 @@ public class Robot extends TimedRobot {
 
   }
 
-
-
-
-
   //Teleop Periodic
   @Override
   public void teleopPeriodic() {
+    TeleopControls();
+  }
 
-    
+  //Test Periodic
+  @Override
+  public void testPeriodic() {
 
-    //Driving 
-    //Slow drive
+  }
+
+
+  //Controls
+  public void TeleopControls() {
+    cameraSwitch();
+    slowDrive();
+    reverseDrive();
+    driving();
+    shooter();
+    climb();
+    intake();
+    intakeLift();
+    indexer();
+    agitator();
+    buttons();
+  }
+
+  public void cameraSwitch() {
+    if(xboxDrive.getTriggerAxis(Hand.kLeft) > 0.1){
+      if(switchCam.getSource() == Cam0) {
+        switchCam.setSource(Cam1);
+    } else {
+        switchCam.setSource(Cam0);
+    }
+    }
+  }
+
+  public void slowDrive() {
     if(xboxDrive.getBumper(Hand.kRight)) {
       slowDrive = 2;
     }
     else {
       slowDrive = 1;
     }
+  }
 
-    //Reverse drive
+  public void reverseDrive() {
     if(xboxDrive.getBumperPressed(Hand.kLeft)){
       if(reverseDrive){
         reverseDrive = false;
@@ -277,43 +290,22 @@ public class Robot extends TimedRobot {
       reverseDrive = true;
       }
     }
+  }
 
-    //Speeds
-    driveSpeed = xboxDrive.getRawAxis(1) - xboxDrive.getTriggerAxis(Hand.kRight) + xboxDrive.getTriggerAxis(Hand.kLeft);
-    turnSpeed = xboxDrive.getRawAxis(4) / slowDrive;
-
-    //Driving
+  public void driving() {
     if(reverseDrive) {
       driveBase.arcadeDrive(driveSpeed * driveSpeedMulti / slowDrive, turnSpeed * turnSpeedMulti);
     }
     else {
       driveBase.arcadeDrive(driveSpeed * -driveSpeedMulti / slowDrive, turnSpeed * turnSpeedMulti);
     }
-    
+  }
 
-
-    //Intake Lift
-    shooterAButton = xboxShooter.getAButton();
-    shooterYButton = xboxShooter.getYButton();
-
-    //Intake
-    shooterBButton = xboxShooter.getBButton();
-    shooterXButton = xboxShooter.getXButton();
-
-
-
-    //Indexer
-    shooterBumperRight = xboxShooter.getBumper(Hand.kRight);
-    shooterBumperLeft = xboxShooter.getBumper(Hand.kLeft);
-
-    //Shooter
-    shooterSpeed = xboxShooter.getTriggerAxis(Hand.kRight) - xboxShooter.getTriggerAxis(Hand.kLeft);
+  public void shooter() {
     shooter.set(shooterSpeed);
+  }
 
-
-
-    //Climb
-
+  public void climb() {
     if(xboxDrive.getBButton() && !xboxDrive.getXButton() && !xboxDrive.getAButton()){
       //Both Up
      winch1.set(-0.27);
@@ -332,8 +324,9 @@ public class Robot extends TimedRobot {
       winch1.set(0.0);
       hook.set(0.0);
     }
+  }
 
-    //Intake
+  public void intake() {
     if(shooterBButton  && !shooterXButton) {
       //In
       roller.set(intakeSpeed);
@@ -351,13 +344,9 @@ public class Robot extends TimedRobot {
       //No
       roller.set(stop);
     }
+  }
 
-
-
-    //Intake Lift
-
-    intakeLimit = !limitSwitch.get();
-
+  public void intakeLift() {
     if(shooterYButton  && !shooterAButton) {
       //Going up
       if(intakeLimit) {
@@ -386,10 +375,9 @@ public class Robot extends TimedRobot {
       //intakeLift.set(xboxShooter.getRawAxis(5));
       intakeLift.set(stop);
     }
+  }
 
-
-
-    //Indexer
+  public void indexer() {
     if(!shooterBumperRight  && shooterBumperLeft) {
       //Index forward 
       indexer.set(indexBackSpeed);
@@ -409,27 +397,39 @@ public class Robot extends TimedRobot {
       //NooOOOooOOoOOoOoooOOoOOOOOOo
       indexer.set(stop);
     }
+  }
+  
+  public void agitator() {
+    agitatorMotor.set(shooterX);
+  }
 
+  public void buttons() {
+    //Speeds
+    driveSpeed = xboxDrive.getRawAxis(1) - xboxDrive.getTriggerAxis(Hand.kRight) + xboxDrive.getTriggerAxis(Hand.kLeft);
+    turnSpeed = xboxDrive.getRawAxis(4) / slowDrive;
+
+    //Intake Lift
+    shooterAButton = xboxShooter.getAButton();
+    shooterYButton = xboxShooter.getYButton();
+
+    //Intake
+    shooterBButton = xboxShooter.getBButton();
+    shooterXButton = xboxShooter.getXButton();
+
+    //Indexer
+    shooterBumperRight = xboxShooter.getBumper(Hand.kRight);
+    shooterBumperLeft = xboxShooter.getBumper(Hand.kLeft);
+
+    //Shooter
+    shooterSpeed = xboxShooter.getTriggerAxis(Hand.kRight) - xboxShooter.getTriggerAxis(Hand.kLeft);
 
     //Agitator
     shooterX = xboxShooter.getRawAxis(0);
     shooterY = -xboxShooter.getRawAxis(1);
-    agitatorMotor.set(shooterX);
-
-
-
+    
+    //Limit switch
+    intakeLimit = !limitSwitch.get();
   }
-
-
-
-
-
-  //Test Periodic
-  @Override
-  public void testPeriodic() {
-
-  }
-
 
 }
 // End of the main code
