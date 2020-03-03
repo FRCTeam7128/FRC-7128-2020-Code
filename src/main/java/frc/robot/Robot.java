@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -78,8 +79,8 @@ public class Robot extends TimedRobot {
   Spark agitatorMotor = new Spark(0);
   //Encoders
   Encoder winchEnc = new Encoder(0,1);
-  Encoder LEnc = new Encoder(3,2); //Switched to create correct direction
-  Encoder REnc = new Encoder(4,5);
+  Encoder LEnc = new Encoder(3, 2, false, EncodingType.k4X); //Switched to create correct direction
+  Encoder REnc = new Encoder(4, 5, false, EncodingType.k4X);
   Encoder intakeEnc = new Encoder(7,8);
   private static final double CPR = 360;   //Counts per rotation
   private static final double wheelD = 6;  //Wheel size 
@@ -124,14 +125,19 @@ public class Robot extends TimedRobot {
     autoStage = 0;
   }
 
+  double WDis;
+  double intakeRot;
+  double LDis;
+  double RDis;
+  double port0Current;
   //Periodic
   @Override
   public void robotPeriodic() {
-    double WDis = winchEnc.getDistance();
-    double intakeRot = intakeEnc.getRaw();
-    double LDis = LEnc.getDistance();
-    double RDis = REnc.getDistance();
-    double port0Current = M_PDP.getCurrent(0);
+    WDis = winchEnc.getDistance();
+    intakeRot = intakeEnc.getRaw();
+    LDis = LEnc.getDistance();
+    RDis = REnc.getDistance();
+    port0Current = M_PDP.getCurrent(0);
     distanceTrav = (LDis + RDis) / 2;
     SmartDashboard.putNumber("Winch Distance", WDis);
     SmartDashboard.putNumber("Intake Rotations", intakeRot);
@@ -164,20 +170,23 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     autoStage = 10;
-    if(autoTime > 0 && autoTime < 2.0 && distanceTrav < 40){
-      driveBase.arcadeDrive(0.5, 0);
+    if(autoTime > 0 && autoTime < 2.0 && RDis > -30){
+      driveBase.arcadeDrive(-0.5, 0);
+      shooter.set(stop);
+      indexer.set(stop);
       autoStage = 11;
     }
-    else if(autoTime > 2.0 && autoTime < 3.0 && distanceTrav < 80){
-      driveBase.arcadeDrive(0.3, 0);
+    else if(autoTime > 2.0 && autoTime < 6.0 && RDis > -60){
+      driveBase.arcadeDrive(-0.35, 0);
       autoStage = 12;
     }
-    else if(autoTime > 3.0 && autoTime < 6.0){
-      driveBase.arcadeDrive(0, 0);
+    else if(autoTime > 6.0 && autoTime < 9.0){
+      driveBase.arcadeDrive(0.0, 0);
       shooter.set(1.0);
       autoStage = 13;
     }
-    else if(autoTime > 6.0 && autoTime < 9.0){
+    
+    else if(autoTime > 9.0 && autoTime < 12.0){
       shooter.set(1.0);
       indexer.set(indexForwardSpeed);
       autoStage = 14;
