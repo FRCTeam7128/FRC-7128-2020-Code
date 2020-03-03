@@ -122,6 +122,7 @@ public class Robot extends TimedRobot {
     winchEnc.setDistancePerPulse(Math.PI*pulleyD/CPR);
     LEnc.setDistancePerPulse(Math.PI*wheelD/CPR);
     REnc.setDistancePerPulse(Math.PI*wheelD/CPR);
+    intakeEnc.setDistancePerPulse(2048);
     
     Cam0 = CameraServer.getInstance().startAutomaticCapture(0);
     Cam1 = CameraServer.getInstance().startAutomaticCapture(1);
@@ -140,7 +141,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     WDis = winchEnc.getDistance();
-    intakeRot = intakeEnc.getRaw();
+    intakeRot = intakeEnc.getDistance();
     LDis = LEnc.getDistance();
     RDis = REnc.getDistance();
     port0Current = M_PDP.getCurrent(0);
