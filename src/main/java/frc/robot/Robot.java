@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   double turnSpeed;
   double slowDrive = 1;
   double driveSpeedMulti = 1;
-  double turnSpeedMulti = 0.7;
+  double turnSpeedMulti = 0.8;
   boolean reverseDrive = false;
   //Intake
   double intakeSpeed = 0.6;
@@ -193,40 +193,43 @@ public class Robot extends TimedRobot {
   //Auto Periodic
   @Override
   public void autonomousPeriodic() {
-    autoStage = 10;
-    if(autoTime > 0 && autoTime < 4.0 && RDis > -50){ //Stage 1
-      //Drive Backwards at 50% speed until -50in
+    autoStage = 10; 
+
+    //Stage 1
+    if(autoTime > 0 && autoTime < 5.0 && RDis > -83){ 
+      //Drive Backwards at 50% speed until -80in
       driveBase.arcadeDrive(-0.5, 0);
-      shooter.set(stop);
-      indexer.set(stop);
+      if(autoTime > 4.0){
+        shooter.set(1.0);
+        indexer.set(stop);
+      }
+      else{
+        shooter.set(stop);
+        indexer.set(stop);
+      }
       autoStage = 11;
 
     }
-    else if(autoTime > 4.0 && autoTime < 6.0 && RDis > -60){ //Stage 2
-      //Drive Backwards at 30% speed until -60in
-      driveBase.arcadeDrive(-0.35, 0);
-      autoStage = 12;
+    else if(autoTime > 4.0 && autoTime < 5.0 && RDis < -83){
+      driveBase.arcadeDrive(0.0, 0);
+      shooter.set(1.0);
+      indexer.set(stop);
 
-    }
-    else if(autoTime > 6.0 && autoTime < 7.0){ //Stage 3
+    }//Stage 2
+    else if(autoTime > 5.0 && autoTime < 14.0){ 
       //Charge Shooter
       driveBase.arcadeDrive(0.0, 0);
       shooter.set(1.0);
+      indexer.set(indexForwardSpeed);
+      agitatorMotor.set(-1.0);
       autoStage = 13;
 
-    }
-    
-    else if(autoTime > 7.0 && autoTime < 9.0){ //Stage 4
-      //Shoot power cells
-      shooter.set(1.0);
-      indexer.set(indexForwardSpeed);
-      autoStage = 14;
-
-    }
-    else{                 //Stage 5
+    }//Stage 3
+    else{                 
       //Stop
       shooter.set(stop);
       indexer.set(stop);
+      agitatorMotor.set(stop);
       autoStage = 15;
 
     }
@@ -330,10 +333,12 @@ public class Robot extends TimedRobot {
     if(shooterBButton  && !shooterXButton) {
       //In
       roller.set(intakeSpeed);
+      driveSpeedMulti = 0.4;
     } 
     else if(!shooterBButton  && shooterXButton) {
       //Out
       roller.set(outakeSpeed);
+      driveSpeedMulti = 0.4;
     } 
     else if(shooterBButton  && shooterXButton) {
       //What
@@ -343,6 +348,7 @@ public class Robot extends TimedRobot {
     else {
       //No
       roller.set(stop);
+      driveSpeedMulti = 1;
     }
   }
 
@@ -430,6 +436,10 @@ public class Robot extends TimedRobot {
     //Limit switch
     intakeLimit = !limitSwitch.get();
   }
+   
+  //public void straightDrive(double targetAngle, double ) {}
 
 }
+
 // End of the main code
+//straightDrive(90, 1.0);
