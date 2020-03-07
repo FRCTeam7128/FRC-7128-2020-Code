@@ -404,7 +404,7 @@ public class Robot extends TimedRobot {
       indexer.set(stop);
     }
   }
-  
+
   public void agitator() {
     agitatorMotor.set(shooterX);
   }
@@ -436,7 +436,7 @@ public class Robot extends TimedRobot {
     //Limit switch
     intakeLimit = !limitSwitch.get();
   }
-   
+
   //public void straightDrive(double targetAngle, double ) {}
 
 }
